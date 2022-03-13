@@ -4,11 +4,7 @@ const getMenuItems = () => [
   { icon: DashboardOutlined, title: 'Dashboard', to: '/' },
   {
     icon: EyeOutlined,
-    //   items: [
-    //     { title: t('create'), to: '/altered' },
-    //     { title: t('list'), to: '/entities' },
-    //   ],
-    title: 'Altered',
+    title: 'Altered Scale',
     to: '/altered',
   },
 ];

@@ -1,0 +1,109 @@
+// https://codedthemes.com/demos/admin-templates/gradient-able/bootstrap/default/element/bc_button.html#
+@import '~antd/lib/style/themes/default.less';
+@import '~antd/dist/antd.less';
+
+/* Ant vars */
+@border-radius-base: 5px; // major border radius
+@border-color-base: rgb(108, 117, 125); // major border color
+@border-color-split: rgb(108, 117, 125);
+// @box-shadow-base: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+//   0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); // major shadow for layers
+// @btn-border-radius-base: 4px;
+// @btn-border-radius-sm: 3px;
+// @btn-font-size-sm: 13px;
+// @disabled-color: rgba(0, 0, 0, 0.25); // disable state color
+// @error-color: #f5222d; // error state color
+// @font-family: 'Roboto', 'Open Sans', sans-serif;
+// @font-size-base: 14px; // major text font size
+@heading-color: rgba(255, 255, 255, 1); // heading text color
+// @link-color: #1890ff; // link color
+// //@primary-color: #19bcbf; // primary color for all components
+@primary-color: #337acc;
+@success-color: rgb(39, 185, 156); // success state color
+// @warning-color: #ff9764; // warning state color
+@text-color: #949ba2; // major text color
+@text-color-secondary: #949ba2; // secondary text color
+// @card-head-background: #f9fafc;
+
+@background: #2a3139;
+@sidebar-background: #343d45;
+// @background-content: rgb(240, 242, 245);
+// @dark-color: #39465c;
+// @gray-color: #7e858e;
+// @info-color: #2dcee3;
+// @light-gray-color: #e4e5e6;
+// @fastTimingFunc: cubic-bezier(0.175, 0.885, 0.32, 1);
+
+@layout-header-background: #fff;
+@layout-header-height: 60px;
+@side-header-background: @sidebar-background;
+@layout-sider-background: @sidebar-background;
+@menu-dark-inline-submenu-bg: @sidebar-background;
+@menu-item-background: @sidebar-background;
+@menu-item-active-bg: @sidebar-background;
+@menu-highlight-color: @heading-color;
+@modal-footer-border-color-split: rgb(222, 226, 230);
+@component-background: #39434d;
+
+/* layout content/header/sider */
+html,
+body,
+#root,
+.ant-layout,
+.app {
+  background-color: @background;
+  height: 100%;
+  min-height: 100%;
+}
+.ant-layout {
+  height: auto;
+}
+.ant-layout-header {
+  display: flex;
+  align-items: center;
+}
+.ant-layout-header svg {
+  cursor: pointer;
+  font-size: 20px;
+}
+.ant-menu {
+  background: @side-header-background;
+}
+.ant-menu.ant-menu-inline {
+  border-right: none;
+}
+.ant-menu > li {
+  font-weight: 700;
+}
+.ant-menu > li:hover {
+  background: @menu-item-background;
+}
+.ant-menu > li.ant-menu-item-active {
+  background: @menu-item-background;
+}
+
+.sider-top {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  font-size: 22px;
+  height: @layout-header-height;
+  margin-bottom: 15px;
+  padding: 0 18px;
+}
+
+/* Card */
+.ant-card {
+  margin: 24px;
+}
+.ant-card.no-margin {
+  margin: 0;
+}
+
+/* Various */
+.link-icon {
+  cursor: pointer;
+}
+.flex-spacer {
+  flex-grow: 1;
+}

@@ -1,0 +1,65 @@
+@import 'assets/common/styleVars.css';
+
+.hourglass {
+  display: block;
+  margin: 3em auto;
+  width: 2em;
+  height: 4em;
+  animation: hourglass 1s linear infinite;
+}
+
+.outer {
+  fill: var(--color-primary);
+}
+
+.middle {
+  fill: #f0f2f5;
+}
+
+.routeContainer {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 400px;
+  position: relative;
+}
+
+.overlayContainer {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.6);
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: all 1s var(--transition-timing-func);
+  z-index: -1;
+}
+.overlayContainerLoading {
+  opacity: 1;
+  z-index: 10;
+}
+
+@keyframes hourglass {
+  0% {
+    transform: rotate(0deg);
+    box-shadow: inset var(--color-primary) 0 -0em 0 0, inset #fff 0 -2em 0 0,
+      inset var(--color-primary) 0 -4em 0 0;
+  }
+
+  80% {
+    transform: rotate(0deg);
+    box-shadow: inset var(--color-primary) 0 -2em 0 0, inset #fff 0 -2em 0 0,
+      inset var(--color-primary) 0 -2em 0 0;
+  }
+
+  100% {
+    transform: rotate(180deg);
+    box-shadow: inset var(--color-primary) 0 -2em 0 0, inset #fff 0 -2em 0 0,
+      inset var(--color-primary) 0 -2em 0 0;
+  }
+}

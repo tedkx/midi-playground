@@ -30,23 +30,4 @@ const MidiMessageCodes = Object.keys(MidiMessages).reduce((obj, key) => {
   return obj;
 }, {});
 
-const scales = {
-  all: Array.from(Array(12)).map((_, idx) => 1),
-  harmonic: [2, 1, 2, 2, 1, 3, 1],
-  ionian: [2, 2, 1, 2, 2, 2, 1],
-  dorian: [2, 1, 2, 2, 2, 1, 2],
-  phrygian: [1, 2, 2, 2, 1, 2, 2],
-  lydian: [2, 2, 2, 1, 2, 2, 1],
-  mixolydian: [2, 2, 1, 2, 2, 1, 2],
-  aeolian: [2, 1, 2, 2, 1, 2, 2],
-  locrian: [1, 2, 2, 1, 2, 2, 2],
-  altered: [1, 2, 1, 2, 2, 2],
-};
-
-export {
-  MidiMessageCodes,
-  MidiMessages,
-  MidiPortConnection,
-  MidiPortState,
-  scales,
-};
+export { MidiMessageCodes, MidiMessages, MidiPortConnection, MidiPortState };

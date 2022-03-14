@@ -1,0 +1,49 @@
+.altered-scenario {
+  min-height: 150px;
+
+  .scenario-title {
+    display: flex;
+    align-items: center;
+    font-size: 46px;
+    justify-content: center;
+    margin: 15px 0;
+    text-align: center;
+
+    .icon {
+      margin-left: 15px;
+      overflow: hidden;
+      width: 0px;
+      transition: none;
+      svg {
+        color: @success-color;
+      }
+
+      &.visible {
+        width: 46px;
+        transition: all 0.15s ease-out;
+      }
+    }
+  }
+
+  .help,
+  .help > .ant-collapse {
+    text-align: center;
+    font-size: 20px;
+
+    svg {
+      color: @info-color;
+      margin-right: 15px;
+    }
+  }
+
+  .wrong-notes-wrap {
+    font-size: 20px;
+    font-weight: bold;
+    overflow: hidden;
+    text-align: center;
+
+    .ant-collapse-content {
+      color: @error-color;
+    }
+  }
+}

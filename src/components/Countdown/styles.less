@@ -1,0 +1,29 @@
+.countdown {
+  position: relative;
+
+  .countdown-inner {
+    align-items: center;
+    display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(50% - 25px);
+    overflow: visible;
+    text-align: center;
+    width: 50px;
+    min-height: 80px;
+  }
+}
+
+.countdown .countdown-number {
+  font-size: 42px;
+  font-weight: bold;
+  opacity: 1;
+  transform: scale(1);
+  transition: none;
+}
+.countdown .countdown-number.active {
+  transform: scale(3);
+  opacity: 0;
+  transition: all 0.9s ease-in;
+}

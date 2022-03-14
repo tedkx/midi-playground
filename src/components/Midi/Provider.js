@@ -22,6 +22,10 @@ const MidiContextProvider = ({ children }) => {
   );
   const [contextValue, setContextValue] = React.useState(defaultContextValue);
 
+  const handleConnectionStateChanged = React.useCallback(e => {
+    console.log(e.port.name, e.port.manufacturer, e.port.state);
+  }, []);
+
   const initialize = React.useCallback(
     sysex => {
       setContextValue(defaultContextValue);
@@ -29,6 +33,9 @@ const MidiContextProvider = ({ children }) => {
         .requestMIDIAccess({ sysex: sysex === true })
         .then(midi => {
           window.midi = midi;
+
+          midi.onstatechange = handleConnectionStateChanged;
+
           setContextValue(ctx => {
             const newContext = {
               ...ctx,

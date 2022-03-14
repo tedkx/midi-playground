@@ -7,10 +7,11 @@ const noteToString = number => {
 };
 
 const noteToMidi = str => {
-  const [_, note, octave] = (str || '').match(/(\w{1,2})(\d{1})/) || [];
+  const [_, note, octave] = (str || '').match(/(.{1,2})(\d{1})/) || [];
   return !note || !octave
     ? null
-    : octave * notes.length + notes.findIndex(note.toUpperCase());
+    : parseInt(octave) * notes.length +
+        notes.findIndex(n => n === note.toUpperCase());
 };
 
 // check for noteOn number

@@ -1,42 +1,37 @@
 import React from 'react';
-import MidiContext from 'components/Midi/Context';
-import Settings from './Settings';
-import { MidiMessages, MidiMessageCodes, MidiPortState } from 'lib/enums';
-import { isNoteOn, isNoteOff, noteToString } from 'lib/utils';
-import { noteOnStart, noteOffStart } from '../../lib/constants';
+import { Card } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import AlteredPracticeScenario from './PracticeScenario';
+import { notes } from 'lib/constants';
 
-const Altered = props => {
-  const { selectedInput } = React.useContext(MidiContext);
+const scenarios = notes.reduce((arr, note) => {
+  arr.push({ note, inversion: 1 });
+  arr.push({ note, inversion: 2 });
+  return arr;
+}, []);
 
-  React.useEffect(() => {
-    if (selectedInput && selectedInput.state === MidiPortState.Connected) {
-      selectedInput.onmidimessage = ({ data, ...rest }) => {
-        if (data[0] !== noteOnStart && data[0] !== noteOffStart) return;
-        if (isNoteOn(data))
-          console.log(
-            'playing',
-            noteToString(data[1]),
-            'with',
-            data[2],
-            'velocity |',
-            MidiMessageCodes[data[0]]
-          );
-        else if (isNoteOff(data))
-          console.log(
-            'stopped playing',
-            noteToString(data[1]),
-            '|',
-            MidiMessageCodes[data[0]]
-          );
-        else
-          console.log('unknown midi message', data, MidiMessageCodes[data[0]]);
-      };
-    }
-  }, [selectedInput]);
+const Altered = () => {
+  const [activeScenario, setActiveScenario] = React.useState(null);
+  const selectScenario = React.useCallback(() => {
+    const rand = Math.random() * scenarios.length;
+    let newScenario = activeScenario;
+    while (newScenario === activeScenario)
+      newScenario = scenarios[Math.floor(rand)];
+    setActiveScenario(newScenario);
+  }, [activeScenario, setActiveScenario]);
+
+  React.useEffect(() => selectScenario(), []);
 
   return (
     <div>
-      <Settings />
+      <Card bordered={false}>
+        <InfoCircleOutlined /> Inversion 1 starts from the minor 7th (ie for C:
+        B). Inversion 2 starts from the major 3rd (ie for C: E).
+      </Card>
+      <AlteredPracticeScenario
+        onCompletion={selectScenario}
+        scenario={activeScenario}
+      />
     </div>
   );
 };

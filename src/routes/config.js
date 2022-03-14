@@ -7,12 +7,14 @@ import Route404 from 'components/Routes/Route404';
 import Dashboard from './Dashboard';
 
 const Altered = React.lazy(() => import('./Altered'));
+const Tools = React.lazy(() => import('./Tools'));
 
 const RoutesConfig = () => (
   <Suspense fallback={<LoaderRoute />}>
     <Switch>
       <Route exact path="/" component={Dashboard} />
       <Route path="/altered" component={Altered} />
+      <Route path="/tools" component={Tools} />
 
       <Route exact path="*" component={Route404} />
     </Switch>

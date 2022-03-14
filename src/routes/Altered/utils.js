@@ -1,6 +1,6 @@
 import React from 'react';
 import MidiContext from 'components/Midi/Context';
-import { MidiMessages, MidiMessageCodes, MidiPortState } from 'lib/enums';
+import { MidiPortState } from 'lib/enums';
 import { isNoteOn, isNoteOff, noteToString, noteToMidi } from 'lib/utils';
 import { noteOnStart, noteOffStart, scales } from 'lib/constants';
 import {

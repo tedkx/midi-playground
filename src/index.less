@@ -31,7 +31,7 @@
 @background: #2a3139;
 @sidebar-background: #343d45;
 // @background-content: rgb(240, 242, 245);
-// @dark-color: #39465c;
+@dark-color: #343a40;
 @gray-color: #6c757d;
 @info-color: #00bcd4;
 // @light-gray-color: #e4e5e6;
@@ -41,7 +41,7 @@
 @layout-header-height: 60px;
 @side-header-background: @sidebar-background;
 @layout-sider-background: @sidebar-background;
-@menu-dark-inline-submenu-bg: @sidebar-background;
+@menu-inline-submenu-bg: rgba(0, 0, 0, 0.1);
 @menu-item-background: @sidebar-background;
 @menu-item-active-bg: @sidebar-background;
 @menu-highlight-color: @heading-color;
@@ -80,6 +80,14 @@ body,
 }
 .ant-menu > li:hover {
   background: @menu-item-background;
+}
+.ant-menu > li .ant-menu > li:hover,
+.ant-menu > li .ant-menu > li.ant-menu-item-selected {
+  background: transparent;
+}
+.ant-menu > li .ant-menu > li a {
+  font-size: 12px;
+  font-weight: normal;
 }
 .ant-menu > li.ant-menu-item-active {
   background: @menu-item-background;

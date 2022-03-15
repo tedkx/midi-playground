@@ -1,0 +1,24 @@
+.pad {
+  border-radius: 3px;
+  box-shadow: 0 0 2px 2px #000, inset 1px 1px #e6e6e6;
+  background-color: #cfcfcf;
+  height: 80px;
+  overflow: hidden;
+  position: relative;
+  width: 80px;
+
+  &.active {
+    box-shadow: 0 0 3px 3px rgba(33, 169, 255, 0.5), inset 1px 1px #e6e6e6;
+  }
+  &.active::after {
+    content: ' ';
+    background-color: #e2ffff;
+    border-radius: 50%;
+    box-shadow: 0 0 15px 15px rgba(255, 255, 255, 0.3),
+      0 0 25px 25px rgba(255, 255, 255, 0.2),
+      0 0 80px 80px rgba(33, 169, 255, 0.5);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+}

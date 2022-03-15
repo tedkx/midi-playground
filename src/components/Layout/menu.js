@@ -1,4 +1,5 @@
 import {
+  AppstoreOutlined,
   CodeOutlined,
   DashboardOutlined,
   EyeOutlined,
@@ -10,6 +11,11 @@ const getMenuItems = () => [
     icon: EyeOutlined,
     title: 'Altered Scale',
     to: '/altered',
+  },
+  {
+    icon: AppstoreOutlined,
+    title: 'Sequencer',
+    to: '/sequencer',
   },
   {
     icon: CodeOutlined,

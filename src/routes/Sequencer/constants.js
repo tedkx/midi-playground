@@ -1,0 +1,38 @@
+import { notesToMidi } from 'lib/utils';
+
+const defaultNotes = [
+  'C4',
+  'G4',
+  'C5',
+  'D#5',
+  'D5',
+  'C5',
+  'D5',
+  'D#5',
+  'G5',
+  'D#5',
+  'D5',
+  'C5',
+  'G4',
+  'F4',
+  'D#4',
+  'D4',
+  'C6',
+  'C6',
+  'C6',
+  'C5',
+  'C5',
+  'C5',
+  'C6',
+  'C6',
+  'C6',
+  'G5',
+  'D#5',
+  'D5',
+  'C5',
+  'G4',
+  'D#4',
+  'D4',
+].map(noteToMidi);
+
+export { defaultNotes };

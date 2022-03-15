@@ -50,7 +50,7 @@ const MidiContextProvider = ({ children }) => {
             );
             newContext.selectedInput =
               inputs.find(i => i.id === ctx.selectedInput) ||
-              inputs.find(i => i.name === defaultInputName) ||
+              inputs.find(i => i.name.indexOf(defaultInputName) >= 0) ||
               inputs[0] ||
               null;
 
@@ -60,7 +60,7 @@ const MidiContextProvider = ({ children }) => {
             );
             newContext.selectedOutput =
               outputs.find(o => o.id === ctx.selectedOutput) ||
-              outputs.find(o => o.name === defaultOutputName) ||
+              outputs.find(o => o.name.indexOf(defaultOutputName) >= 0) ||
               outputs[0] ||
               null;
 

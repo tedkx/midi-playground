@@ -3,8 +3,10 @@
 
 @import '/src/components/Countdown/styles.less';
 @import '/src/components/SimpleCollapse/styles.less';
+@import '/src/components/KeyboardComponents/styles.less';
 
 @import '/src/routes/Altered/styles.less';
+@import '/src/routes/Sequencer/styles.less';
 
 /* Ant vars */
 @border-radius-base: 5px; // major border radius
@@ -117,4 +119,9 @@ body,
 }
 .flex-spacer {
   flex-grow: 1;
+}
+.flex-breaker {
+  flex-basis: 100%;
+  height: 0;
+  overflow: hidden;
 }

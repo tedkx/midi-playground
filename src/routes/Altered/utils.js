@@ -108,7 +108,13 @@ const useScenarioTesting = ({ onCompletion, scenario }, activeNotes, ref) => {
   React.useEffect(() => {
     if (scenarioStatus !== scenarioStatuses.Testing || activeNotes.length < 4)
       return;
-    const { spaces } = scenario.inversion === 1 ? inversion1 : inversion2;
+    const { spaces, start } =
+      scenario.inversion === 1 ? inversion1 : inversion2;
+
+    const baseScaleNote = noteToString(activeNotes[0] - start);
+    if (baseScaleNote.substr(0, baseScaleNote.length - 1) !== scenario.note)
+      return;
+
     let spaceIdx = 0;
     while (spaceIdx < spaces.length) {
       if (
@@ -181,11 +187,68 @@ const useScenarioHelp = ({ scenario }, scenarioNotes, scenarioStatus) => {
               .join(' ')
           );
         }
-      });
+      }, showHelpMillis);
     else cleanup();
   }, [scenario, scenarioStatus]);
 
   return helpNotes;
 };
 
-export { useNotesListening, useScenarioHelp, useScenarioTesting };
+const roundMillisToDecimal = (millis, precision) => {
+  if (typeof millis !== 'number') return millis;
+  if (typeof precision !== 'number' || precision < 0 || precision > 3)
+    precision = 1;
+
+  const divisor = Math.pow(10, 3 - precision);
+
+  return (Math.round(millis / divisor) * divisor) / 1000;
+};
+
+const useScenarioTiming = scenarioStatus => {
+  const [times, setTimes] = React.useState([]);
+  const [startTime, setStartTime] = React.useState(null);
+
+  React.useEffect(() => {
+    if (scenarioStatus === scenarioStatuses.Testing) {
+      setStartTime(new Date());
+    } else if (scenarioStatus === scenarioStatuses.Success) {
+      setTimes(currentTimes =>
+        (currentTimes.length <= 100
+          ? currentTimes
+          : currentTimes.slice(currentTimes.length - 100)
+        ).concat(new Date() - startTime)
+      );
+      setStartTime(null);
+    }
+  }, [scenarioStatus]);
+
+  const meanTime = React.useMemo(
+    () =>
+      times.length
+        ? roundMillisToDecimal(
+            times.reduce((sum, time) => sum + time, 0) / times.length
+          )
+        : null,
+    [times]
+  );
+
+  const roundedTime = React.useMemo(
+    () =>
+      times[times.length - 1]
+        ? roundMillisToDecimal(times[times.length - 1])
+        : 0,
+    [times]
+  );
+
+  return {
+    time: roundedTime,
+    meanTime,
+  };
+};
+
+export {
+  useNotesListening,
+  useScenarioHelp,
+  useScenarioTesting,
+  useScenarioTiming,
+};

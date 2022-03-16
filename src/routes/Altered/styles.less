@@ -5,22 +5,27 @@
     display: flex;
     align-items: center;
     font-size: 46px;
+    flex-direction: column;
     justify-content: center;
     margin: 15px 0;
     text-align: center;
 
-    .icon {
-      margin-left: 15px;
-      overflow: hidden;
-      width: 0px;
-      transition: none;
-      svg {
-        color: @success-color;
-      }
+    svg {
+      color: @success-color;
+      font-size: 46px;
+    }
 
-      &.visible {
-        width: 46px;
-        transition: all 0.15s ease-out;
+    .time {
+      border-radius: 8px;
+      color: @dark-color;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 0 5px 1px;
+      &.fast {
+        background-color: @success-color;
+      }
+      &.slow {
+        background-color: @error-color;
       }
     }
   }

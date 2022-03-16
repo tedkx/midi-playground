@@ -25,8 +25,12 @@ const Altered = () => {
   return (
     <div>
       <Card bordered={false}>
-        <InfoCircleOutlined /> Inversion 1 starts from the minor 7th (ie for C:
-        B). Inversion 2 starts from the major 3rd (ie for C: E).
+        <h2>Altered Scale Random Chord Practice</h2>
+        Play the chord displayed in altered scale on your left hand. Help will
+        be displayed if you take too long.
+        <br />
+        Inversion 1 starts from the minor 7th (ie for C: B). Inversion 2 starts
+        from the major 3rd (ie for C: E).
       </Card>
       <AlteredPracticeScenario
         onCompletion={selectScenario}

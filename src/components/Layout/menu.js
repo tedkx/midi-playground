@@ -14,8 +14,8 @@ const getMenuItems = () => [
   },
   {
     icon: AppstoreOutlined,
-    title: 'Sequencer',
-    to: '/sequencer',
+    title: 'Midi Sequencer',
+    to: '/midi-sequencer',
   },
   {
     icon: CodeOutlined,

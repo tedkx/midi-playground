@@ -1,5 +1,6 @@
-import { notesToMidi } from 'lib/utils';
+import { noteToMidi } from 'lib/utils';
 
+//set default sample to lazerhawk's lawless
 const defaultNotes = [
   'C4',
   'G4',

@@ -28,7 +28,4 @@ const isNoteOff = midiMessage =>
     midiMessage[0] <= noteOnStart + numOfChannels &&
     midiMessage[2] === 0);
 
-window.noteToString = noteToString;
-window.noteToMidi = noteToMidi;
-
 export { isNoteOn, isNoteOff, noteToMidi, noteToString };

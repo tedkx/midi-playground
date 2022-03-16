@@ -1,11 +1,39 @@
 import React from 'react';
 
-const Pad = ({ active, className, style }) => {
+const Pad = ({
+  active,
+  children,
+  className,
+  index,
+  on,
+  onClick,
+  onWheel,
+  ...props
+}) => {
+  const handleClick = React.useCallback(
+    e => {
+      if (onClick) onClick(index, on, e);
+    },
+    [index, on, onClick]
+  );
+
+  const handleWheel = React.useCallback(
+    e => {
+      if (onWheel) onWheel(index, e.deltaY < 0 ? 'up' : 'down', e);
+    },
+    [index, onWheel]
+  );
+
   return (
     <div
-      className={`pad ${className} ${active && 'active'}`}
-      style={style}
-    ></div>
+      className={`pad ${className} ${active && 'active'} ${on && 'on'}`}
+      onClick={handleClick}
+      onWheel={handleWheel}
+      {...props}
+    >
+      <div className="pad-overlay"></div>
+      <div className="pad-inner">{children}</div>
+    </div>
   );
 };
 

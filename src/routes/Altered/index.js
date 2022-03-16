@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
 import AlteredPracticeScenario from './PracticeScenario';
 import { notes } from 'lib/constants';
 
@@ -20,7 +19,9 @@ const Altered = () => {
     setActiveScenario(newScenario);
   }, [activeScenario, setActiveScenario]);
 
-  React.useEffect(() => selectScenario(), []);
+  React.useEffect(() => {
+    selectScenario();
+  }, []);
 
   return (
     <div>

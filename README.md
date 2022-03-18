@@ -6,7 +6,7 @@
 
 ### Midi Sequencer
 
-- Basic buttons (start/stop)
+- ~~Basic buttons (start/stop)~~
 - Basic controls (tempo, midi channels, note duration)
 - Pad note up/down visual indication (notes left on either direction)
 - Scales other than chromatic

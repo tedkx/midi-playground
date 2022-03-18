@@ -41,7 +41,7 @@ const usePadEvents = (padData, setPadData) => {
   };
 };
 
-const useNotesPlaying = padData => {
+const useNotesPlaying = (padData, autostart) => {
   const midiContext = React.useContext(MidiContext);
   const { selectedOutput } = midiContext;
 
@@ -79,15 +79,34 @@ const useNotesPlaying = padData => {
   }, [selectedOutput]);
 
   React.useEffect(() => {
-    if (midiContext?.ready && midiContext.selectedOutput)
+    if (autostart && midiContext?.ready && midiContext.selectedOutput)
       ref.current.intervalId = setInterval(playNote, intervalMillis);
 
     return () => {
       clearInterval(ref.current.intervalId);
     };
-  }, [midiContext]);
+  }, [autostart, midiContext]);
 
-  return activeNoteIdx;
+  const onSeekToStart = React.useCallback(() => {
+    setActiveNoteIdx(0);
+    ref.current.noteIdx = 0;
+  }, [setActiveNoteIdx]);
+
+  const onPlay = React.useCallback(() => {
+    ref.current.intervalId = setInterval(playNote, intervalMillis);
+  }, [playNote]);
+
+  const onStop = React.useCallback(() => {
+    clearInterval(ref.current.intervalId);
+    ref.current.intervalId = null;
+  }, []);
+
+  return {
+    activeNoteIdx,
+    onPlay,
+    onSeekToStart,
+    onStop,
+  };
 };
 
 export { useNotesPlaying, usePadEvents };

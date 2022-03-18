@@ -1,10 +1,35 @@
 .sequencer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   padding-top: 50px;
 
-  .pad {
+  .controls {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto 24px;
+    padding-right: 15px;
+    width: 760px;
+
+    .ant-card {
+      margin: 0;
+
+      .ant-card-body {
+        display: flex;
+        padding: 16px;
+
+        .keyboard-button {
+          margin: 0 8px;
+        }
+      }
+    }
+  }
+
+  .pads-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pads-container .keyboard-pad {
     margin: 0 15px 15px 0;
   }
 }

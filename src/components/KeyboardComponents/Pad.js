@@ -26,7 +26,9 @@ const Pad = ({
 
   return (
     <div
-      className={`pad ${className} ${active && 'active'} ${on && 'on'}`}
+      className={`keyboard-pad ${className} ${active && 'active'} ${
+        on && 'on'
+      }`}
       onClick={handleClick}
       onWheel={handleWheel}
       {...props}

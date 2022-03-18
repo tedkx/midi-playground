@@ -2,11 +2,7 @@ import React from 'react';
 import MidiContext from 'components/Midi/Context';
 import { MidiMessages } from 'lib/enums';
 
-const bpm = 90;
-const noteValue = 16;
-const intervalMillis = ((60000 / bpm) * 4) / noteValue;
 const velocity = 50;
-const noteDuration = 30;
 const numOfChannels = 4;
 
 const usePadEvents = (padData, setPadData) => {
@@ -41,11 +37,20 @@ const usePadEvents = (padData, setPadData) => {
   };
 };
 
-const useNotesPlaying = (padData, autostart) => {
+const useNotesPlaying = (
+  { bpm, noteValue, noteDuration = 30 },
+  padData,
+  autostart
+) => {
   const midiContext = React.useContext(MidiContext);
   const { selectedOutput } = midiContext;
 
   const [activeNoteIdx, setActiveNoteIdx] = React.useState(null);
+
+  const intervalMillis = React.useMemo(
+    () => ((60000 / bpm) * 4) / noteValue,
+    [bpm, noteValue]
+  );
 
   const ref = React.useRef({
     intervalId: null,
@@ -84,8 +89,16 @@ const useNotesPlaying = (padData, autostart) => {
 
     return () => {
       clearInterval(ref.current.intervalId);
+      ref.current.intervalId = null;
     };
-  }, [autostart, midiContext]);
+  }, [autostart]);
+
+  React.useEffect(() => {
+    if (ref.current.intervalId !== null) {
+      clearInterval(ref.current.intervalId);
+      setInterval(playNote, intervalMillis);
+    }
+  }, [playNote, intervalMillis]);
 
   const onSeekToStart = React.useCallback(() => {
     setActiveNoteIdx(0);
@@ -93,8 +106,9 @@ const useNotesPlaying = (padData, autostart) => {
   }, [setActiveNoteIdx]);
 
   const onPlay = React.useCallback(() => {
-    ref.current.intervalId = setInterval(playNote, intervalMillis);
-  }, [playNote]);
+    if (ref.current.intervalId === null)
+      ref.current.intervalId = setInterval(playNote, intervalMillis);
+  }, [playNote, intervalMillis]);
 
   const onStop = React.useCallback(() => {
     clearInterval(ref.current.intervalId);

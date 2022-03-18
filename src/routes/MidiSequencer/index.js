@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from 'antd';
 import { Button, Pad } from 'components/KeyboardComponents';
-import { defaultNotes } from './constants';
+import { defaultPattern } from './constants';
 import { usePadEvents, useNotesPlaying } from './utils';
 import { noteToString } from 'lib/utils';
 import {
@@ -12,14 +12,16 @@ import {
 
 const Sequencer = () => {
   const [padData, setPadData] = React.useState(
-    defaultNotes.map(note => ({
+    defaultPattern.notes.map(note => ({
       note,
       on: true,
     }))
   );
 
-  const { activeNoteIdx, onSeekToStart, onPlay, onStop } =
-    useNotesPlaying(padData);
+  const { activeNoteIdx, onSeekToStart, onPlay, onStop } = useNotesPlaying(
+    defaultPattern,
+    padData
+  );
 
   const padEvents = usePadEvents(padData, setPadData);
 

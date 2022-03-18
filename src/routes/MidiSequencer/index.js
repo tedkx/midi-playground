@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card } from 'antd';
-import { Button, Pad } from 'components/KeyboardComponents';
+import { Button, Pad, RotaryKnob } from 'components/KeyboardComponents';
 import { defaultPattern } from './constants';
-import { usePadEvents, useNotesPlaying } from './utils';
+import { usePadEvents, useParameters, useNotesPlaying } from './utils';
 import { noteToString } from 'lib/utils';
 import {
   CaretRightOutlined,
@@ -17,6 +17,8 @@ const Sequencer = () => {
       on: true,
     }))
   );
+
+  const { parameters, setParameter } = useParameters(defaultPattern);
 
   const { activeNoteIdx, onSeekToStart, onPlay, onStop } = useNotesPlaying(
     defaultPattern,
@@ -39,7 +41,9 @@ const Sequencer = () => {
             <PauseOutlined />
           </Button>
         </Card>
-        <Card bordered={false}></Card>
+        <Card bordered={false}>
+          <RotaryKnob value={64} />
+        </Card>
       </div>
       <div className="pads-container">
         {padData.map(({ note, on }, idx) => (

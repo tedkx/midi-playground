@@ -101,3 +101,68 @@
       0 0 80px 80px rgba(33, 169, 255, 0.7);
   }
 }
+
+.rotary-knob {
+  // border: solid 3px #222;
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  height: 32px;
+  position: relative;
+  width: 32px;
+
+  .knob-inner {
+    border-radius: 50%;
+    box-shadow: inset 1px 1px #bbb;
+    width: 100%;
+    height: 100%;
+    background: #888a8f;
+
+    &::after {
+      box-shadow: inset 1px 1px #777;
+      content: ' ';
+      position: absolute;
+      bottom: 19%;
+      left: 19%;
+      width: 20%;
+      height: 20%;
+      background-color: #eee;
+      border-radius: 50%;
+    }
+  }
+
+  .ticks {
+    .tick {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 5;
+      overflow: visible;
+
+      &::after {
+        background-color: #161a1f;
+        content: ' ';
+        width: 2px;
+        height: 5px;
+        position: absolute;
+        top: -10px;
+        left: 50%;
+      }
+
+      &.active::after {
+        box-shadow: 0 0 5px 3px rgba(255, 255, 255, 0.15);
+        background-color: #ccc;
+      }
+    }
+
+    @iterations: 24;
+    .tick-loop (@i) when (@i > 0) {
+      .tick:nth-child(@{i}) {
+        transform: rotate(150 - @i * 12deg);
+      }
+      .tick-loop(@i - 1);
+    }
+    .tick-loop (@iterations);
+  }
+}

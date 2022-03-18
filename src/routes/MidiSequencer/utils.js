@@ -123,4 +123,8 @@ const useNotesPlaying = (
   };
 };
 
-export { useNotesPlaying, usePadEvents };
+const useParameters = ({ bpm, noteDuration, noteValue }) => {
+  return {};
+};
+
+export { useNotesPlaying, useParameters, usePadEvents };

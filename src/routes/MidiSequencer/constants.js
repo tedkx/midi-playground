@@ -27,4 +27,15 @@ const formatPattern = pattern => ({
 
 const defaultPattern = formatPattern(tunez.theGrid);
 
-export { defaultPattern };
+const parameterData = {
+  bpm: {
+    min: 40,
+    max: 280,
+  },
+  transpose: {
+    min: -24,
+    max: 24,
+  },
+};
+
+export { defaultPattern, parameterData };

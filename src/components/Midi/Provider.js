@@ -1,17 +1,19 @@
 import React from 'react';
 import MidiContext from './Context';
 import SettingsModal from './SettingsModal';
-
-const defaultInputName = 'MODX-1';
-const defaultOutputName = 'MODX-1';
+import { MidiPortState } from 'lib/enums';
+import { debounce } from 'lodash';
+window.debounce = debounce;
+const preferredInputName = 'MODX-1';
+const preferredOutputName = 'MODX-1';
 
 const MidiContextProvider = ({ children }) => {
   const [settingsVisible, setSettingsVisibe] = React.useState(false);
+  const ref = React.useRef({ midi: null });
 
   const defaultContextValue = React.useMemo(
     () => ({
       error: null,
-      midi: null,
       ready: false,
       selectedInput: null,
       selectedOutput: null,
@@ -22,9 +24,62 @@ const MidiContextProvider = ({ children }) => {
   );
   const [contextValue, setContextValue] = React.useState(defaultContextValue);
 
-  const handleConnectionStateChanged = React.useCallback(e => {
-    console.log(e.port.name, e.port.manufacturer, e.port.state);
-  }, []);
+  // add new connected inputs/outputs and discard disconnected from context
+  const onConnectionStateChanged = React.useCallback(
+    e => {
+      if (e.port.state === MidiPortState.Connected) {
+        const inputs = Array.from(ref.current.midi.inputs.values()).filter(
+          input => input.state === MidiPortState.Connected
+        );
+        const outputs = Array.from(ref.current.midi.outputs.values()).filter(
+          input => input.state === MidiPortState.Connected
+        );
+
+        setContextValue(currentCtx => ({ ...currentCtx, inputs, outputs }));
+      } else {
+        // go to next input/output, if disconnected port was selected
+        setContextValue(currentCtx => {
+          const inputs = Array.from(ref.current.midi.inputs.values()).filter(
+            input => input.state === MidiPortState.Connected
+          );
+          const outputs = Array.from(ref.current.midi.outputs.values()).filter(
+            input => input.state === MidiPortState.Connected
+          );
+          const newSelectedInput =
+            (!inputs.some(
+              input => input.name === currentCtx.selectedInput?.name
+            ) &&
+              inputs[0]) ||
+            null;
+          const newSelectedOutput =
+            (!outputs.some(
+              output => output.name === currentCtx.selectedOutput?.name
+            ) &&
+              outputs[0]) ||
+            null;
+
+          return newSelectedInput !== false ||
+            newSelectedOutput !== false ||
+            inputs.length !== currentCtx.inputs?.length ||
+            outputs.length !== currentCtx.outputs?.length
+            ? {
+                ...currentCtx,
+                inputs,
+                outputs,
+                selectedInput: newSelectedInput,
+                selectedOutput: newSelectedOutput,
+              }
+            : currentCtx;
+        });
+      }
+    },
+    [setContextValue]
+  );
+
+  const handleConnectionStateChanged = React.useMemo(
+    () => debounce(onConnectionStateChanged, 100),
+    [onConnectionStateChanged]
+  );
 
   const initialize = React.useCallback(
     sysex => {
@@ -32,35 +87,37 @@ const MidiContextProvider = ({ children }) => {
       return navigator
         .requestMIDIAccess({ sysex: sysex === true })
         .then(midi => {
-          window.midi = midi;
+          ref.current.midi = midi;
 
           midi.onstatechange = handleConnectionStateChanged;
 
           setContextValue(ctx => {
+            const inputs = Array.from(midi.inputs.values()).filter(
+              i => i.state === 'connected'
+            );
+            const outputs = Array.from(midi.outputs.values()).filter(
+              o => o.state === 'connected'
+            );
+
             const newContext = {
               ...ctx,
-              midi,
+              inputs,
+              outputs,
               ready: true,
               sysex: sysex === true,
             };
 
             // try to preserve previous input, if available
-            var inputs = Array.from(midi.inputs.values()).filter(
-              i => i.state === 'connected'
-            );
             newContext.selectedInput =
               inputs.find(i => i.id === ctx.selectedInput) ||
-              inputs.find(i => i.name.indexOf(defaultInputName) >= 0) ||
+              inputs.find(i => i.name.indexOf(preferredInputName) >= 0) ||
               inputs[0] ||
               null;
 
             // same for outputs
-            var outputs = Array.from(midi.outputs.values()).filter(
-              o => o.state === 'connected'
-            );
             newContext.selectedOutput =
               outputs.find(o => o.id === ctx.selectedOutput) ||
-              outputs.find(o => o.name.indexOf(defaultOutputName) >= 0) ||
+              outputs.find(o => o.name.indexOf(preferredOutputName) >= 0) ||
               outputs[0] ||
               null;
 
@@ -68,7 +125,10 @@ const MidiContextProvider = ({ children }) => {
           });
         })
         .catch(ex =>
-          setContextValue({ ...defaultContextValue, error: ex.message })
+          setContextValue({
+            ...defaultContextValue,
+            error: ex.message,
+          })
         );
     },
     [setContextValue]

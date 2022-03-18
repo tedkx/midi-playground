@@ -22,7 +22,6 @@ const MidiMessageViewer = props => {
       )
         return;
       const [type, note, velocity] = data;
-      console.log('text', type, note, velocity);
       const text = `${type} ${note} ${velocity} - ${
         MidiMessageCodes[type]
       } ${noteToString(note)} Velocity ${velocity}`;

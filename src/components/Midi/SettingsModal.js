@@ -1,6 +1,5 @@
 import React from 'react';
 import { Form, Modal, Select } from 'antd';
-import MidiContext from './Context';
 
 const formatOption = inputOutput => ({
   disabled: inputOutput.state !== 'connected',
@@ -10,35 +9,34 @@ const formatOption = inputOutput => ({
 
 const SettingsModal = ({ contextValue, setContextValue, ...props }) => {
   const { visible } = props;
-  const { midi, selectedInput, selectedOutput } = contextValue || {};
+  const { inputs, outputs, selectedInput, selectedOutput } = contextValue || {};
 
-  const {
-    inputOptions = [],
-    outputOptions = [],
-    initialValues = {},
-  } = React.useMemo(
+  const { inputOptions = [], outputOptions = [] } = React.useMemo(
     () =>
-      visible
+      visible && inputs && outputs
         ? {
-            inputOptions: Array.from(midi.inputs.values()).map(formatOption),
-            outputOptions: Array.from(midi.outputs.values()).map(formatOption),
+            inputOptions: inputs.map(formatOption),
+            outputOptions: outputs.map(formatOption),
           }
         : {},
-    [visible]
+    [inputs, outputs, visible]
   );
 
   const handleInputSelect = React.useCallback(
     id =>
-      setContextValue(ctx => ({ ...ctx, selectedInput: midi.inputs.get(id) })),
-    [midi, setContextValue]
+      setContextValue(ctx => ({
+        ...ctx,
+        selectedInput: inputs.find(inp => inp.id === id),
+      })),
+    [inputs, setContextValue]
   );
   const handleOutputSelect = React.useCallback(
     id =>
       setContextValue(ctx => ({
         ...ctx,
-        selectedOutput: midi.outputs.get(id),
+        selectedOutput: outputs.find(output => output.id === id),
       })),
-    [midi, setContextValue]
+    [outputs, setContextValue]
   );
 
   return (

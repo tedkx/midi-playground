@@ -14,6 +14,12 @@ const style = {
 const MidiMessageViewer = props => {
   const { selectedInput } = React.useContext(MidiContext);
   const [lines, setLines] = React.useState([]);
+
+  const ref = React.useRef({
+    start: null,
+    numOfMessages: 0,
+  });
+
   const appendLine = React.useCallback(
     ({ data }) => {
       if (
@@ -21,10 +27,28 @@ const MidiMessageViewer = props => {
         data[0] === MidiMessages.Clock
       )
         return;
-      const [type, note, velocity] = data;
-      const text = `${type} ${note} ${velocity} - ${
-        MidiMessageCodes[type]
-      } ${noteToString(note)} Velocity ${velocity}`;
+
+      const arr = Array.from(data);
+
+      let sliceLength = 3,
+        additionalText = '';
+      while (sliceLength > 0) {
+        const key = arr.slice(0, sliceLength).join('_');
+        const type = MidiMessageCodes[key];
+        if (type) {
+          additionalText =
+            type.indexOf('Note') >= 0
+              ? `${type} ${noteToString(arr[1])} Velocity ${arr[2]}`
+              : sliceLength === 2
+              ? `${type} Value ${arr[2]}`
+              : `${type} ${arr.slice(sliceLength).join(' ')}`;
+          break;
+        }
+
+        sliceLength--;
+      }
+
+      const text = `${arr[0]} ${arr[1]} ${arr[2]} - ${additionalText}`;
       setLines(currentLines =>
         currentLines.slice(currentLines.length - 100).concat(text)
       );
@@ -35,6 +59,10 @@ const MidiMessageViewer = props => {
   React.useEffect(() => {
     if (selectedInput && selectedInput.state === MidiPortState.Connected)
       selectedInput.onmidimessage = appendLine;
+
+    return () => {
+      if (selectedInput) selectedInput.onmidimessage = null;
+    };
   }, [selectedInput]);
 
   return (

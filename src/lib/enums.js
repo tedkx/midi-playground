@@ -1,4 +1,5 @@
 import { noteOffStart, noteOnStart, numOfChannels } from './constants';
+import { MidiMessages as MODXMidiMessages } from './devices/modx';
 
 const MidiPortState = {
   Connected: 'connected',
@@ -14,7 +15,6 @@ const MidiPortConnection = {
 // https://www.midi.org/specifications-old/item/table-2-expanded-messages-list-status-bytes
 
 const MidiMessages = {
-  ActiveSensing: 254,
   ...Array.from(Array(numOfChannels)).reduce((obj, _, idx) => {
     obj[`Channel${idx + 1}NoteOff`] = noteOffStart + idx;
     obj[`Channel${idx + 1}NoteOn`] = noteOnStart + idx;
@@ -22,7 +22,7 @@ const MidiMessages = {
   }, {}),
   PitchBendStart: 224,
   PitchBendEnd: 225,
-  Clock: 248,
+  ...MODXMidiMessages,
 };
 
 const MidiMessageCodes = Object.keys(MidiMessages).reduce((obj, key) => {

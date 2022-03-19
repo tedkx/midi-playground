@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card } from 'antd';
-import { Button, Pad, RotaryKnob } from 'components/KeyboardComponents';
-import { defaultPattern } from './constants';
+import { Button, Pad } from 'components/KeyboardComponents';
+import ParameterKnob from './ParameterKnob';
+import { defaultPattern, parameterData } from './constants';
 import { usePadEvents, useParameters, useNotesPlaying } from './utils';
 import { noteToString } from 'lib/utils';
 import {
@@ -9,6 +10,11 @@ import {
   PauseOutlined,
   StepBackwardOutlined,
 } from '@ant-design/icons';
+
+const parametersArr = Object.keys(parameterData).map(key => ({
+  ...parameterData[key],
+  name: key,
+}));
 
 const Sequencer = () => {
   const [padData, setPadData] = React.useState(
@@ -18,7 +24,7 @@ const Sequencer = () => {
     }))
   );
 
-  const { parameters, setParameter } = useParameters(defaultPattern);
+  const { parameters, onSetParameter } = useParameters(defaultPattern);
 
   const { activeNoteIdx, onSeekToStart, onPlay, onStop } = useNotesPlaying(
     defaultPattern,
@@ -42,7 +48,14 @@ const Sequencer = () => {
           </Button>
         </Card>
         <Card bordered={false}>
-          <RotaryKnob value={64} />
+          {parametersArr.map(p => (
+            <ParameterKnob
+              {...p}
+              key={p.name}
+              onSetParameter={onSetParameter}
+              value={parameters[p.name]}
+            />
+          ))}
         </Card>
       </div>
       <div className="pads-container">

@@ -29,12 +29,16 @@ const defaultPattern = formatPattern(tunez.theGrid);
 
 const parameterData = {
   bpm: {
+    defaultValue: 90,
     min: 40,
     max: 280,
+    title: 'Tempo',
   },
   transpose: {
+    defaultValue: 0,
     min: -24,
     max: 24,
+    title: 'Transpose',
   },
 };
 

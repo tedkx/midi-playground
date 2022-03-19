@@ -1,6 +1,7 @@
 import React from 'react';
 import MidiContext from 'components/Midi/Context';
 import { MidiMessages } from 'lib/enums';
+import { parameterData } from './constants';
 
 const velocity = 50;
 const numOfChannels = 4;
@@ -123,8 +124,30 @@ const useNotesPlaying = (
   };
 };
 
-const useParameters = ({ bpm, noteDuration, noteValue }) => {
-  return {};
+const useParameters = pattern => {
+  const [parameters, setParameters] = React.useState(
+    Object.keys(parameterData).reduce((obj, key) => {
+      obj[key] =
+        typeof pattern[key] === 'number'
+          ? pattern[key]
+          : parameterData[key].defaultValue;
+      return obj;
+    }, {})
+  );
+
+  const onSetParameter = React.useCallback(
+    (name, value) =>
+      setParameters(curr => ({
+        ...curr,
+        [name]: value,
+      })),
+    []
+  );
+
+  return {
+    onSetParameter,
+    parameters,
+  };
 };
 
 export { useNotesPlaying, useParameters, usePadEvents };

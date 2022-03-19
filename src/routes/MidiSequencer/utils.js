@@ -6,6 +6,8 @@ import { parameterData } from './constants';
 const velocity = 50;
 const numOfChannels = 4;
 
+const getIntervalMillis = (bpm, noteValue) => ((60000 / bpm) * 4) / noteValue;
+
 const usePadEvents = (padData, setPadData) => {
   const onClick = React.useCallback(
     padIndex =>
@@ -39,7 +41,7 @@ const usePadEvents = (padData, setPadData) => {
 };
 
 const useNotesPlaying = (
-  { bpm, noteValue, noteDuration = 30 },
+  { bpm, noteValue, ...parameters },
   padData,
   autostart
 ) => {
@@ -48,32 +50,61 @@ const useNotesPlaying = (
 
   const [activeNoteIdx, setActiveNoteIdx] = React.useState(null);
 
-  const intervalMillis = React.useMemo(
-    () => ((60000 / bpm) * 4) / noteValue,
-    [bpm, noteValue]
-  );
-
+  // keep almmost every param in ref so that they can be pick by interval callback playNote
   const ref = React.useRef({
+    ...parameters,
     intervalId: null,
+    intervalMillis: getIntervalMillis(bpm, noteValue),
     noteIdx: 0,
     padData,
+    tempoChangeRequested: null,
   });
 
+  // if interval active, store new bpm to tempoChangeRequested
+  // it will be reset by the next playNote tick
+  React.useEffect(() => {
+    if (ref.current.intervalId !== null)
+      ref.current.tempoChangeRequested = getIntervalMillis(bpm, noteValue);
+    else ref.current.intervalMillis = getIntervalMillis(bpm, noteValue);
+  }, [bpm, noteValue]);
+
+  // update ref with the latest parameter values as they change
+  React.useEffect(() => {
+    Object.keys(parameters).forEach(key => {
+      ref.current[key] = parameters[key];
+    });
+  }, [parameters]);
+
+  // same for notes
   React.useEffect(() => {
     ref.current.padData = padData;
   }, [padData]);
 
+  // the interval callback where all the interesting stuff take place
   const playNote = React.useCallback(() => {
-    const { note, on } = ref.current.padData[ref.current.noteIdx];
-    setActiveNoteIdx(ref.current.noteIdx);
-    ref.current.noteIdx++;
-    if (ref.current.noteIdx >= ref.current.padData.length)
-      ref.current.noteIdx = 0;
+    const { padData, noteDuration, noteIdx, tempoChangeRequested, transpose } =
+      ref.current;
 
+    // pending temp change. set intervalMillis, reset tempoChangeRequested and restart interval
+    if (tempoChangeRequested) {
+      clearInterval(ref.current.intervalId);
+      ref.current.intervalMillis = tempoChangeRequested;
+      ref.current.tempoChangeRequested = null;
+      ref.current.intervalId = setInterval(playNote, tempoChangeRequested);
+    }
+
+    const { note, on } = padData[noteIdx];
+    setActiveNoteIdx(noteIdx);
+
+    ref.current.noteIdx++;
+    if (ref.current.noteIdx >= padData.length) ref.current.noteIdx = 0;
+
+    // pad is not on, no sound required
     if (!on) return;
+
     const messages = Array.from(Array(numOfChannels)).map((_, idx) => [
       MidiMessages[`Channel${idx + 1}NoteOn`],
-      note,
+      note + transpose,
       velocity,
     ]);
 
@@ -84,6 +115,7 @@ const useNotesPlaying = (
     );
   }, [selectedOutput]);
 
+  // auto begin playing
   React.useEffect(() => {
     if (autostart && midiContext?.ready && midiContext.selectedOutput)
       ref.current.intervalId = setInterval(playNote, intervalMillis);
@@ -94,13 +126,7 @@ const useNotesPlaying = (
     };
   }, [autostart]);
 
-  React.useEffect(() => {
-    if (ref.current.intervalId !== null) {
-      clearInterval(ref.current.intervalId);
-      setInterval(playNote, intervalMillis);
-    }
-  }, [playNote, intervalMillis]);
-
+  // start/stop/seek to start button callbacks
   const onSeekToStart = React.useCallback(() => {
     setActiveNoteIdx(0);
     ref.current.noteIdx = 0;
@@ -108,8 +134,11 @@ const useNotesPlaying = (
 
   const onPlay = React.useCallback(() => {
     if (ref.current.intervalId === null)
-      ref.current.intervalId = setInterval(playNote, intervalMillis);
-  }, [playNote, intervalMillis]);
+      ref.current.intervalId = setInterval(
+        playNote,
+        ref.current.intervalMillis
+      );
+  }, [playNote]);
 
   const onStop = React.useCallback(() => {
     clearInterval(ref.current.intervalId);
@@ -126,11 +155,12 @@ const useNotesPlaying = (
 
 const useParameters = pattern => {
   const [parameters, setParameters] = React.useState(
-    Object.keys(parameterData).reduce((obj, key) => {
-      obj[key] =
-        typeof pattern[key] === 'number'
-          ? pattern[key]
-          : parameterData[key].defaultValue;
+    Object.keys({ ...parameterData, ...pattern }).reduce((obj, key) => {
+      if (key !== 'notes')
+        obj[key] =
+          typeof pattern[key] === 'number'
+            ? pattern[key]
+            : parameterData[key].defaultValue;
       return obj;
     }, {})
   );

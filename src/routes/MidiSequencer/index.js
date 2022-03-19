@@ -27,7 +27,7 @@ const Sequencer = () => {
   const { parameters, onSetParameter } = useParameters(defaultPattern);
 
   const { activeNoteIdx, onSeekToStart, onPlay, onStop } = useNotesPlaying(
-    defaultPattern,
+    parameters,
     padData
   );
 

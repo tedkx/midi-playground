@@ -140,16 +140,21 @@
     position: relative;
     z-index: 0;
 
-    &::after {
-      box-shadow: inset 1px 1px #777;
-      content: ' ';
-      position: absolute;
-      bottom: 19%;
-      left: 19%;
-      width: 20%;
-      height: 20%;
-      background-color: #eee;
-      border-radius: 50%;
+    .marker {
+      width: 100%;
+      height: 100%;
+
+      &::after {
+        box-shadow: inset 1px 1px 1px 1px rgba(0, 0, 0, 0.7);
+        content: ' ';
+        position: absolute;
+        top: 11%;
+        left: 40%;
+        width: 20%;
+        height: 20%;
+        background-color: #eee;
+        border-radius: 50%;
+      }
     }
   }
 
@@ -180,15 +185,6 @@
         background-color: #ccc;
       }
     }
-
-    @iterations: 0;
-    .tick-loop (@i) when (@i < 25) {
-      .tick:nth-child(@{i}) {
-        transform: rotate(@i * 12 - 150deg);
-      }
-      .tick-loop(@i + 1);
-    }
-    .tick-loop (@iterations);
   }
 
   .value-wrap {

@@ -3,7 +3,6 @@ import MidiContext from './Context';
 import SettingsModal from './SettingsModal';
 import { MidiPortState } from 'lib/enums';
 import { debounce } from 'lodash';
-window.debounce = debounce;
 const preferredInputName = 'MODX-1';
 const preferredOutputName = 'MODX-1';
 

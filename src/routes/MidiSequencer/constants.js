@@ -35,6 +35,7 @@ const parameterData = {
     title: 'Tempo',
   },
   transpose: {
+    centerBased: true,
     defaultValue: 0,
     min: -24,
     max: 24,

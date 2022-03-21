@@ -1,5 +1,13 @@
 import { noteToMidi } from 'lib/utils';
 
+const createParameter = (min, max, defaultValue, title, centerBased) => ({
+  centerBased: centerBased === true,
+  defaultValue,
+  max,
+  min,
+  title,
+});
+
 const tunez = {
   //lazerhawk's lawless
   lawless: {
@@ -27,20 +35,19 @@ const formatPattern = pattern => ({
 
 const defaultPattern = formatPattern(tunez.theGrid);
 
-const parameterData = {
-  bpm: {
-    defaultValue: 90,
-    min: 40,
-    max: 280,
-    title: 'Tempo',
-  },
-  transpose: {
-    centerBased: true,
-    defaultValue: 0,
-    min: -24,
-    max: 24,
-    title: 'Transpose',
-  },
+const sequencerParameterData = {
+  duration: createParameter(
+    1,
+    300,
+    defaultPattern.noteDuration,
+    'Note Duration'
+  ),
+  transpose: createParameter(-24, 24, 0, 'Transpose', true),
 };
 
-export { defaultPattern, parameterData };
+const globalParameterData = {
+  bpm: createParameter(40, 280, defaultPattern.bpm, 'Tempo'),
+  noteValue: createParameter(1, 32, defaultPattern.noteValue, 'Note Value'),
+};
+
+export { defaultPattern, globalParameterData, sequencerParameterData };

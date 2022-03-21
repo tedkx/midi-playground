@@ -1,17 +1,34 @@
 import React from 'react';
 import MidiContext from 'components/Midi/Context';
 import { MidiMessages } from 'lib/enums';
-import { parameterData } from './constants';
-
-const velocity = 50;
-const numOfChannels = 4;
 
 const getIntervalMillis = (bpm, noteValue) => ((60000 / bpm) * 4) / noteValue;
 
-const usePadEvents = (padData, setPadData) => {
+const stepSequencerDataToSteps = stepSequencersData => {
+  if (!Array.isArray(stepSequencersData)) return [];
+
+  let stepsLength = stepSequencersData[0].notes.length;
+  for (let i = 0; i < stepSequencersData.length; i++)
+    if (stepSequencersData[i].length > stepsLength)
+      stepsLength = stepSequencersData[i].length;
+
+  return Array.from(Array(stepsLength)).map((_, idx) =>
+    stepSequencersData.map(
+      ({ channels, notes, noteDuration, transpose, velocity }) => ({
+        channels,
+        duration: noteDuration,
+        note: notes[idx].note + transpose,
+        on: notes[idx].on,
+        velocity,
+      })
+    )
+  );
+};
+
+const usePadEvents = setPadData => {
   const onClick = React.useCallback(
     padIndex =>
-      setPadData(pd =>
+      setPadData(({ notes, ...pd }) =>
         pd.map((item, idx) =>
           idx === padIndex ? { ...item, on: !item.on } : item
         )
@@ -21,16 +38,17 @@ const usePadEvents = (padData, setPadData) => {
 
   const onWheel = React.useCallback(
     (padIndex, direction) =>
-      setPadData(pd =>
-        pd.map((item, idx) =>
+      setPadData(({ notes, ...pd }) => ({
+        ...pd,
+        notes: notes.map((item, idx) =>
           idx === padIndex
             ? {
                 ...item,
                 note: direction === 'up' ? item.note + 1 : item.note - 1,
               }
             : item
-        )
-      ),
+        ),
+      })),
     [setPadData]
   );
 
@@ -42,7 +60,7 @@ const usePadEvents = (padData, setPadData) => {
 
 const useNotesPlaying = (
   { bpm, noteValue, ...parameters },
-  padData,
+  stepSequencersData,
   autostart
 ) => {
   const midiContext = React.useContext(MidiContext);
@@ -56,7 +74,7 @@ const useNotesPlaying = (
     intervalId: null,
     intervalMillis: getIntervalMillis(bpm, noteValue),
     noteIdx: 0,
-    padData,
+    steps: stepSequencerDataToSteps(stepSequencersData),
     tempoChangeRequested: null,
   });
 
@@ -77,13 +95,12 @@ const useNotesPlaying = (
 
   // same for notes
   React.useEffect(() => {
-    ref.current.padData = padData;
-  }, [padData]);
+    ref.current.steps = stepSequencerDataToSteps(stepSequencersData);
+  }, [stepSequencersData]);
 
   // the interval callback where all the interesting stuff take place
   const playNote = React.useCallback(() => {
-    const { padData, noteDuration, noteIdx, tempoChangeRequested, transpose } =
-      ref.current;
+    const { steps, noteIdx, tempoChangeRequested } = ref.current;
 
     // pending temp change. set intervalMillis, reset tempoChangeRequested and restart interval
     if (tempoChangeRequested) {
@@ -93,26 +110,48 @@ const useNotesPlaying = (
       ref.current.intervalId = setInterval(playNote, tempoChangeRequested);
     }
 
-    const { note, on } = padData[noteIdx];
+    //const { note, on, velocity } = padData[noteIdx];
+    const stepData = steps[noteIdx];
     setActiveNoteIdx(noteIdx);
 
     ref.current.noteIdx++;
-    if (ref.current.noteIdx >= padData.length) ref.current.noteIdx = 0;
+    if (ref.current.noteIdx >= steps.length) ref.current.noteIdx = 0;
 
     // pad is not on, no sound required
-    if (!on) return;
+    const { messages, messagesOffGroups } = stepData.reduce(
+      (obj, { channels, duration, note, on, velocity }) => {
+        if (on && velocity > 0)
+          channels.forEach(channel => {
+            obj.messages.push([
+              MidiMessages[`Channel${channel}NoteOn`],
+              note,
+              velocity,
+            ]);
+            if (!obj.messagesOffGroups[duration])
+              obj.messagesOffGroups[duration] = [];
+            obj.messagesOffGroups[duration].push([
+              MidiMessages[`Channel${channel}NoteOn`],
+              note,
+              0,
+            ]);
+          });
 
-    const messages = Array.from(Array(numOfChannels)).map((_, idx) => [
-      MidiMessages[`Channel${idx + 1}NoteOn`],
-      note + transpose,
-      velocity,
-    ]);
+        return obj;
+      },
+      { messages: [], messagesOffGroups: {} }
+    );
+
+    if (!messages.length) return;
 
     messages.forEach(message => selectedOutput.send(message));
-    setTimeout(
-      () => messages.forEach(([t, n]) => selectedOutput.send([t, n, 0])),
-      noteDuration
-    );
+    Object.keys(messagesOffGroups).forEach(duration => {
+      const messagesOff = messagesOffGroups[duration];
+      setTimeout(
+        () =>
+          messagesOff.forEach(messageOff => selectedOutput.send(messageOff)),
+        duration
+      );
+    });
   }, [selectedOutput]);
 
   // auto begin playing
@@ -153,14 +192,11 @@ const useNotesPlaying = (
   };
 };
 
-const useParameters = pattern => {
+const useParameters = (parametersArr, parameterValues = {}) => {
   const [parameters, setParameters] = React.useState(
-    Object.keys({ ...parameterData, ...pattern }).reduce((obj, key) => {
-      if (key !== 'notes')
-        obj[key] =
-          typeof pattern[key] === 'number'
-            ? pattern[key]
-            : parameterData[key].defaultValue;
+    parametersArr.reduce((obj, parameterData) => {
+      obj[parameterData.name] =
+        parameterValues[parameterData.name] || parameterData.defaultValue;
       return obj;
     }, {})
   );

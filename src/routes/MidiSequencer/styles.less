@@ -82,4 +82,31 @@
       }
     }
   }
+
+  .midi-channels {
+    .title {
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .content {
+      background: @dark-color;
+      border: solid 1px @text-color;
+      font-size: 22px;
+      padding: 5px 2px;
+      text-align: center;
+    }
+  }
+}
+
+.midi-channels-menu .menu-item {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+
+  & > button {
+    margin-left: 4px;
+  }
 }

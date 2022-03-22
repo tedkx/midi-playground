@@ -1,10 +1,12 @@
 import React from 'react';
 import { Card } from 'antd';
 import { Button, Pad } from 'components/KeyboardComponents';
+import MidiChannelsSelector from './MidiChannelsSelector';
 import ParameterKnob from './ParameterKnob';
 import { sequencerParameterData } from './constants';
-import { usePadEvents, useParameters, useNotesPlaying } from './utils';
+import { usePadEvents, useParameters } from './utils';
 import { noteToString } from 'lib/utils';
+import { numOfChannels } from 'lib/constants';
 
 const parametersArr = Object.keys(sequencerParameterData).map(key => ({
   ...sequencerParameterData[key],
@@ -35,6 +37,12 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
     <div className="step-sequencer">
       <div className="controls">
         <Card bordered={false}>
+          <MidiChannelsSelector
+            channels={data?.channels}
+            numOfChannels={numOfChannels}
+            onSetData={onSetData}
+            title="Channels"
+          />
           {parametersArr.map(p => (
             <ParameterKnob
               {...p}

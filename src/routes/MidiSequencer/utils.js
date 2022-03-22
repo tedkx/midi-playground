@@ -28,11 +28,12 @@ const stepSequencerDataToSteps = stepSequencersData => {
 const usePadEvents = setPadData => {
   const onClick = React.useCallback(
     padIndex =>
-      setPadData(({ notes, ...pd }) =>
-        pd.map((item, idx) =>
+      setPadData(({ notes, ...pd }) => ({
+        ...pd,
+        notes: notes.map((item, idx) =>
           idx === padIndex ? { ...item, on: !item.on } : item
-        )
-      ),
+        ),
+      })),
     [setPadData]
   );
 

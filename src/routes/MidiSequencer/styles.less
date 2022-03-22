@@ -1,5 +1,44 @@
+@control-row-margin: 18px;
+
 .sequencer {
+  display: flex;
   padding-top: 50px;
+
+  .global-controls {
+    .ant-card {
+      margin-top: 0;
+      margin-bottom: 0;
+      min-width: 250px;
+    }
+
+    .ant-card-body {
+      padding: 0;
+    }
+
+    .control-row {
+      align-items: center;
+      display: flex;
+      justify-content: space-evenly;
+      margin: @control-row-margin;
+      margin-bottom: 36px;
+      position: relative;
+
+      &::after {
+        border-bottom: solid 1px @dark-color;
+        bottom: -@control-row-margin;
+        content: ' ';
+        position: absolute;
+        left: -@control-row-margin;
+        right: -@control-row-margin;
+      }
+      &:last-child {
+        margin-bottom: @control-row-margin;
+      }
+      &:last-child:after {
+        border: none;
+      }
+    }
+  }
 
   .controls {
     align-items: center;
@@ -15,10 +54,6 @@
       .ant-card-body {
         display: flex;
         padding: 8px;
-
-        .keyboard-button {
-          margin: 0 8px;
-        }
       }
     }
 
@@ -32,10 +67,19 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+      min-width: 760px;
     }
 
     .pads-container .keyboard-pad {
       margin: 0 15px 15px 0;
+    }
+
+    .controls .ant-card {
+      flex-grow: 1;
+
+      .ant-card-body {
+        justify-content: flex-end;
+      }
     }
   }
 }

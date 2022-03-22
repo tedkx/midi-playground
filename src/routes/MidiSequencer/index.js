@@ -56,27 +56,29 @@ const MidiSequencer = () => {
 
   return (
     <div className="sequencer">
-      <div className="controls">
+      <div className="global-controls">
         <Card bordered={false}>
-          <Button onClick={onSeekToStart}>
-            <StepBackwardOutlined />
-          </Button>
-          <Button onClick={onPlay}>
-            <CaretRightOutlined />
-          </Button>
-          <Button onClick={onStop}>
-            <PauseOutlined />
-          </Button>
-        </Card>
-        <Card bordered={false}>
-          {parametersArr.map(p => (
-            <ParameterKnob
-              {...p}
-              key={p.name}
-              onSetParameter={onSetParameter}
-              value={parameters[p.name]}
-            />
-          ))}
+          <div className="control-row">
+            <Button onClick={onSeekToStart}>
+              <StepBackwardOutlined />
+            </Button>
+            <Button onClick={onPlay}>
+              <CaretRightOutlined />
+            </Button>
+            <Button onClick={onStop}>
+              <PauseOutlined />
+            </Button>
+          </div>
+          <div className="control-row">
+            {parametersArr.map(p => (
+              <ParameterKnob
+                {...p}
+                key={p.name}
+                onSetParameter={onSetParameter}
+                value={parameters[p.name]}
+              />
+            ))}
+          </div>
         </Card>
       </div>
       <div className="step-sequencer">

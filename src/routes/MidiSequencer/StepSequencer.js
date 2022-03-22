@@ -13,6 +13,7 @@ const parametersArr = Object.keys(sequencerParameterData).map(key => ({
 
 const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
   const { noteDuration, transpose } = data;
+
   const parameterValues = React.useMemo(
     () => ({ noteDuration, transpose }),
     [noteDuration, transpose]
@@ -23,12 +24,16 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
     parameterValues
   );
 
+  React.useEffect(
+    () => onSetData(d => ({ ...d, ...parameters })),
+    [parameters]
+  );
+
   const padEvents = usePadEvents(onSetData);
 
   return (
     <div className="step-sequencer">
       <div className="controls">
-        <div className="flex-spacer"></div>
         <Card bordered={false}>
           {parametersArr.map(p => (
             <ParameterKnob

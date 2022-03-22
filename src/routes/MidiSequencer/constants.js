@@ -36,7 +36,7 @@ const formatPattern = pattern => ({
 const defaultPattern = formatPattern(tunez.theGrid);
 
 const sequencerParameterData = {
-  duration: createParameter(
+  noteDuration: createParameter(
     1,
     300,
     defaultPattern.noteDuration,
@@ -47,7 +47,7 @@ const sequencerParameterData = {
 
 const globalParameterData = {
   bpm: createParameter(40, 280, defaultPattern.bpm, 'Tempo'),
-  noteValue: createParameter(1, 32, defaultPattern.noteValue, 'Note Value'),
+  noteValue: createParameter(1, 32, defaultPattern.noteValue, 'NoteValue'),
 };
 
 export { defaultPattern, globalParameterData, sequencerParameterData };

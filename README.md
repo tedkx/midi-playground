@@ -8,7 +8,7 @@
 
 - [x] Basic buttons (start/stop)
 - [ ] Knob click event
-- [ ] Basic controls ([x] tempo, [x] transpose, midi channels, note duration)
+- [ ] Basic controls ([x] tempo, [x] transpose, midi channels, [x] note duration)
 - [ ] Pre-made pattern selection
 - [ ] Pad note up/down visual indication (notes left on either direction)
 - [ ] Number of pattern pads

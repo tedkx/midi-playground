@@ -31,16 +31,11 @@ const getTickProps = (tickIndex, angle, centerBased) => {
   };
 };
 
-const RotaryKnob = ({
-  centerBased,
-  className,
-  displayValue,
+const useWheelValueChanging = ({
   max,
   min,
   onSetValue,
   step = defaultStep,
-  style,
-  title,
   value,
 }) => {
   const ref = React.useRef({
@@ -55,11 +50,6 @@ const RotaryKnob = ({
     [step]
   );
 
-  const angle = React.useMemo(
-    () => convertToKnobAngle(value, min, max, centerBased),
-    [value, min, max]
-  );
-
   const onWheel = React.useCallback(
     e => {
       const newValue =
@@ -71,6 +61,84 @@ const RotaryKnob = ({
     [value, step, min, max]
   );
 
+  return onWheel;
+};
+
+const useClickValueChanging = ({ max, min, onSetValue, value }) => {
+  const ref = React.useRef({
+    y: null,
+    mouseMovelistener: null,
+    mouseUplistener: null,
+    mouseDown: false,
+    value: value,
+  });
+  const [dragging, setDragging] = React.useState(false);
+
+  React.useEffect(() => {
+    ref.current.value = value;
+  }, [value]);
+
+  const handleMouseUp = React.useCallback(
+    e => {
+      if (e.button === 0) {
+        setDragging(false);
+        window.removeEventListener('mousemove', ref.current.mouseMovelistener);
+        window.removeEventListener('mouseup', ref.current.mouseUplistener);
+        ref.current.listener = null;
+      }
+    },
+    [setDragging]
+  );
+
+  const handleMouseMove = React.useCallback(
+    e => {
+      const newValue = Math.min(
+        max,
+        Math.max(min, ref.current.value + ref.current.y - e.pageY)
+      );
+      ref.current.y = e.pageY;
+      onSetValue(newValue);
+    },
+    [onSetValue, min, max]
+  );
+
+  const onMouseDown = React.useCallback(e => {
+    if (e.button === 0) {
+      setDragging(true);
+      ref.current.y = e.pageY;
+      //ref.current.mouseMovelistener = debounce(handleMouseMove, 10);
+      ref.current.mouseMovelistener = handleMouseMove;
+      ref.current.mouseUplistener = handleMouseUp;
+
+      window.addEventListener('mousemove', ref.current.mouseMovelistener);
+      window.addEventListener('mouseup', ref.current.mouseUplistener);
+    }
+  }, []);
+
+  return { dragging, onMouseDown };
+};
+
+const RotaryKnob = props => {
+  const {
+    centerBased,
+    className,
+    displayValue,
+    max,
+    min,
+    style,
+    title,
+    value,
+  } = props;
+
+  const angle = React.useMemo(
+    () => convertToKnobAngle(value, min, max, centerBased),
+    [value, min, max]
+  );
+
+  const onWheel = useWheelValueChanging(props);
+
+  const { dragging, onMouseDown } = useClickValueChanging(props);
+
   return (
     <div
       className={`rotary-knob ${displayValue && 'with-value'} ${
@@ -78,8 +146,13 @@ const RotaryKnob = ({
       } ${className}`}
       style={style}
     >
+      {dragging && <div className="window-overlay"></div>}
       {title && <div className="title">{title}</div>}
-      <div className="knob-overlay" onWheel={onWheel}></div>
+      <div
+        className="knob-overlay"
+        onWheel={onWheel}
+        onMouseDown={onMouseDown}
+      ></div>
       <div className="knob-inner">
         <div
           className="marker"

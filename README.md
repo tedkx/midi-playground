@@ -7,8 +7,8 @@
 ### Midi Sequencer
 
 - [x] Basic buttons (start/stop)
-- [ ] Knob click event
-- [ ] Basic controls ([x] tempo, [x] transpose, midi channels, [x] note duration)
+- [x] Knob click event
+- [x] Basic controls (tempo, transpose, midi channels, note duration)
 - [ ] Pre-made pattern selection
 - [ ] Pad note up/down visual indication (notes left on either direction)
 - [ ] Number of pattern pads

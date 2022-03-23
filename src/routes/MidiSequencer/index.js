@@ -2,7 +2,6 @@ import React from 'react';
 import { Card } from 'antd';
 import { Button, Pad } from 'components/KeyboardComponents';
 import ParameterKnob from './ParameterKnob';
-import { noteToMidi } from 'lib/utils';
 import { defaultPattern, globalParameterData } from './constants';
 import { useParameters, useNotesPlaying } from './utils';
 import {
@@ -12,7 +11,6 @@ import {
 } from '@ant-design/icons';
 import StepSequencer from './StepSequencer';
 
-const velocity = 50;
 const channels = [1, 2, 3, 4];
 
 const parametersArr = Object.keys(globalParameterData).map(key => ({
@@ -25,12 +23,8 @@ const MidiSequencer = () => {
     {
       channels,
       noteDuration: defaultPattern.noteDuration,
-      notes: defaultPattern.notes.map(note => ({
-        note,
-        on: true,
-      })),
+      notes: defaultPattern.notes,
       transpose: 0,
-      velocity,
     },
   ]);
 

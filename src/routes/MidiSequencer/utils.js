@@ -13,15 +13,13 @@ const stepSequencerDataToSteps = stepSequencersData => {
       stepsLength = stepSequencersData[i].length;
 
   return Array.from(Array(stepsLength)).map((_, idx) =>
-    stepSequencersData.map(
-      ({ channels, notes, noteDuration, transpose, velocity }) => ({
-        channels,
-        duration: noteDuration,
-        note: notes[idx].note + transpose,
-        on: notes[idx].on,
-        velocity,
-      })
-    )
+    stepSequencersData.map(({ channels, notes, noteDuration, transpose }) => ({
+      channels,
+      duration: noteDuration,
+      note: notes[idx].note + transpose,
+      on: notes[idx].on,
+      velocity: notes[idx].velocity,
+    }))
   );
 };
 
@@ -111,7 +109,6 @@ const useNotesPlaying = (
       ref.current.intervalId = setInterval(playNote, tempoChangeRequested);
     }
 
-    //const { note, on, velocity } = padData[noteIdx];
     const stepData = steps[noteIdx];
     setActiveNoteIdx(noteIdx);
 

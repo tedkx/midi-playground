@@ -1,5 +1,7 @@
 import { noteToMidi } from 'lib/utils';
 
+const defaultVelocity = 64;
+
 const createParameter = (min, max, defaultValue, title, centerBased) => ({
   centerBased: centerBased === true,
   defaultValue,
@@ -18,7 +20,7 @@ const tunez = {
     noteValue: 16,
   },
 
-  // tigran hanasyan's the grid intro
+  // tigran hamasyan's the grid intro
   theGrid: {
     bpm: 138,
     noteDuration: 100,
@@ -26,14 +28,31 @@ const tunez = {
       'G3 D4 G4 C5 D5 D#4 G4 A#4 D#5 F5 B3 G4 G#4 D5 D#5 F5 G5 G3 D4 G4 C5 D5 F4 G4 A#4 D#5 F5 C4 G4 G#4 D5 D#5',
     noteValue: 16,
   },
+
+  // tigran hamasyan's new maps
+  newMaps: {
+    bpm: 120,
+    noteDuration: 300,
+    notes:
+      'C5 A#4 C5 G#5:90 C#5 G#4 D#5 C5 A#4 G#5:90 C5 G#4 C#5 D#5 A#4 C5 G#5:90 G#5:0 C5 A#4 C5 G#5 C5 A#4 C5 G#5:90 C#5 G#4 D#5 C5 A#4 G5:90 C5 G#4 C#5 D#5 A#4 C#5 A#5:90 A#5:0 C5 A#4 C5 G#5:90 C#5 G#4 D#5 C5 A#4 G#5:90 C5 G#4 C#5 D#5 A#4 C5 G#5:90 G#5:0 C5 A#4 C5 G#5 C5 A#4 C5 G#5:90 C#5 G#4 D#5 C5 A#4 G5:90 A#4 G#4 C#5 D#5 A#4 C#5 C6:90 C6:0',
+    noteValue: 16,
+  },
 };
 
 const formatPattern = pattern => ({
   ...pattern,
-  notes: pattern.notes.split(' ').map(noteToMidi),
+  notes: pattern.notes.split(' ').map(item => {
+    const [note, velocityStr] = item.split(':');
+    const velocity = parseInt(velocityStr);
+    return {
+      note: noteToMidi(note),
+      on: velocity !== 0,
+      velocity: isNaN(velocity) ? defaultVelocity : velocity,
+    };
+  }),
 });
 
-const defaultPattern = formatPattern(tunez.theGrid);
+const defaultPattern = formatPattern(tunez.newMaps);
 
 const sequencerParameterData = {
   noteDuration: createParameter(

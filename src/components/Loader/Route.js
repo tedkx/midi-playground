@@ -1,9 +1,8 @@
 import React from 'react';
 import Spinner from './Spinner';
-import styles from './Loader.module.css';
 
 const LoaderRouteComponent = () => (
-  <div className={styles.routeContainer}>
+  <div className="loader-container">
     <Spinner />
   </div>
 );

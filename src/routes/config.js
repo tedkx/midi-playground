@@ -11,16 +11,18 @@ const MidiSequencer = React.lazy(() => import('./MidiSequencer'));
 const Tools = React.lazy(() => import('./Tools'));
 
 const RoutesConfig = () => (
-  <Suspense fallback={<LoaderRoute />}>
-    <Switch>
-      <Route exact path="/" component={Dashboard} />
-      <Route path="/altered" component={Altered} />
-      <Route path="/midi-sequencer" component={MidiSequencer} />
-      <Route path="/tools" component={Tools} />
+  <>
+    <Suspense fallback={<LoaderRoute />}>
+      <Switch>
+        <Route exact path="/" component={Dashboard} />
+        <Route path="/altered" component={Altered} />
+        <Route path="/midi-sequencer" component={MidiSequencer} />
+        <Route path="/tools" component={Tools} />
 
-      <Route exact path="*" component={Route404} />
-    </Switch>
-  </Suspense>
+        <Route exact path="*" component={Route404} />
+      </Switch>
+    </Suspense>
+  </>
 );
 
 export default RoutesConfig;

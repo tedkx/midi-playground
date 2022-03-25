@@ -1,6 +1,8 @@
 import { noteToMidi } from 'lib/utils';
 
 const defaultVelocity = 64;
+const defaultNote = 'C5';
+const defaultPatternLength = 16;
 
 const createParameter = (min, max, defaultValue, title, centerBased) => ({
   centerBased: centerBased === true,
@@ -32,10 +34,11 @@ const tunez = {
   // tigran hamasyan's new maps
   newMaps: {
     bpm: 120,
-    noteDuration: 300,
+    noteDuration: 600,
     notes:
       'C5 A#4 C5 G#5:90 C#5 G#4 D#5 C5 A#4 G#5:90 C5 G#4 C#5 D#5 A#4 C5 G#5:90 G#5:0 C5 A#4 C5 G#5 C5 A#4 C5 G#5:90 C#5 G#4 D#5 C5 A#4 G5:90 C5 G#4 C#5 D#5 A#4 C#5 A#5:90 A#5:0 C5 A#4 C5 G#5:90 C#5 G#4 D#5 C5 A#4 G#5:90 C5 G#4 C#5 D#5 A#4 C5 G#5:90 G#5:0 C5 A#4 C5 G#5 C5 A#4 C5 G#5:90 C#5 G#4 D#5 C5 A#4 G5:90 A#4 G#4 C#5 D#5 A#4 C#5 C6:90 C6:0',
     noteValue: 16,
+    velocity: 54,
   },
 };
 
@@ -47,7 +50,9 @@ const formatPattern = pattern => ({
     return {
       note: noteToMidi(note),
       on: velocity !== 0,
-      velocity: isNaN(velocity) ? defaultVelocity : velocity,
+      velocity: isNaN(velocity)
+        ? pattern.velocity || defaultVelocity
+        : velocity,
     };
   }),
 });
@@ -57,7 +62,7 @@ const defaultPattern = formatPattern(tunez.newMaps);
 const sequencerParameterData = {
   noteDuration: createParameter(
     1,
-    300,
+    1000,
     defaultPattern.noteDuration,
     'Note Duration'
   ),
@@ -69,4 +74,11 @@ const globalParameterData = {
   noteValue: createParameter(1, 32, defaultPattern.noteValue, 'NoteValue'),
 };
 
-export { defaultPattern, globalParameterData, sequencerParameterData };
+export {
+  defaultNote,
+  defaultPattern,
+  defaultPatternLength,
+  defaultVelocity,
+  globalParameterData,
+  sequencerParameterData,
+};

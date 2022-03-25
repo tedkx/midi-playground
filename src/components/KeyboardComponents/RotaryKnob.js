@@ -40,28 +40,52 @@ const useWheelValueChanging = ({
 }) => {
   const ref = React.useRef({
     factor: 1,
+    max,
+    min,
+    step,
+    value,
   });
+  const elementRef = React.useRef();
+
+  React.useEffect(() => {
+    ref.current.step = step;
+    ref.current.value = value;
+    ref.current.min = min;
+    ref.current.max = max;
+  }, [value, step, min, max]);
 
   const resetFactor = React.useMemo(
     () =>
       debounce(() => {
-        ref.current.factor = step;
+        ref.current.factor = ref.current.step;
       }, 25),
-    [step]
+    []
   );
 
-  const onWheel = React.useCallback(
-    e => {
+  React.useEffect(() => {
+    const onWheel = e => {
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      e.preventDefault();
+
+      const { value, step, min, max } = ref.current;
       const newValue =
         value + step * ref.current.factor * (e.deltaY < 0 ? 1 : -1);
       onSetValue(Math.min(max, Math.max(min, newValue)));
       ref.current.factor += step;
       resetFactor();
-    },
-    [value, step, min, max]
-  );
+    };
 
-  return onWheel;
+    elementRef.current.addEventListener('wheel', onWheel, { passive: false });
+
+    return () => {
+      elementRef.current.removeEventListener('wheel', onWheel, {
+        passive: false,
+      });
+    };
+  }, []);
+
+  return { elementRef };
 };
 
 const useClickValueChanging = ({ max, min, onSetValue, value }) => {
@@ -135,7 +159,7 @@ const RotaryKnob = props => {
     [value, min, max]
   );
 
-  const onWheel = useWheelValueChanging(props);
+  const { onWheel, elementRef } = useWheelValueChanging(props);
 
   const { dragging, onMouseDown } = useClickValueChanging(props);
 
@@ -150,8 +174,8 @@ const RotaryKnob = props => {
       {title && <div className="title">{title}</div>}
       <div
         className="knob-overlay"
-        onWheel={onWheel}
         onMouseDown={onMouseDown}
+        ref={elementRef}
       ></div>
       <div className="knob-inner">
         <div

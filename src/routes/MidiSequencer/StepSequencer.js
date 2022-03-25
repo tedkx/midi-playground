@@ -1,8 +1,7 @@
 import React from 'react';
 import { Card } from 'antd';
-import { Button, Pad } from 'components/KeyboardComponents';
+import { Pad, ParameterKnob } from 'components/KeyboardComponents';
 import MidiChannelsSelector from './MidiChannelsSelector';
-import ParameterKnob from './ParameterKnob';
 import { sequencerParameterData } from './constants';
 import { usePadEvents, useParameters } from './utils';
 import { noteToString } from 'lib/utils';

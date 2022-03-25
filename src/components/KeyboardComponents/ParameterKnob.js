@@ -1,5 +1,5 @@
 import React from 'react';
-import { RotaryKnob } from 'components/KeyboardComponents';
+import RotaryKnob from './RotaryKnob';
 
 const ParameterKnob = ({ name, onSetParameter, ...props }) => {
   const handleValueChange = React.useCallback(

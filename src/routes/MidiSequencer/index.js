@@ -1,22 +1,10 @@
 import React from 'react';
-import { Card } from 'antd';
-import { Button, Pad } from 'components/KeyboardComponents';
-import ParameterKnob from './ParameterKnob';
-import { defaultPattern, globalParameterData } from './constants';
-import { useParameters, useNotesPlaying } from './utils';
-import {
-  CaretRightOutlined,
-  PauseOutlined,
-  StepBackwardOutlined,
-} from '@ant-design/icons';
+import { defaultPattern } from './constants';
+import { useNotesPlaying, useParameters } from './utils';
+import GlobalControl, { globalParametersArr } from './GlobalControl';
 import StepSequencer from './StepSequencer';
 
 const channels = [1, 2, 3, 4];
-
-const parametersArr = Object.keys(globalParameterData).map(key => ({
-  ...globalParameterData[key],
-  name: key,
-}));
 
 const MidiSequencer = () => {
   const [stepSequencersData, setStepSequencersData] = React.useState([
@@ -41,40 +29,20 @@ const MidiSequencer = () => {
     [setStepSequencersData, activeSequencerIdx]
   );
 
-  const { parameters, onSetParameter } = useParameters(parametersArr);
+  const { parameters, onSetParameter } = useParameters(globalParametersArr);
 
-  const { activeNoteIdx, onSeekToStart, onPlay, onStop } = useNotesPlaying(
+  const { activeNoteIdx, ...globalControlEvents } = useNotesPlaying(
     parameters,
     stepSequencersData
   );
 
   return (
     <div className="sequencer">
-      <div className="global-controls">
-        <Card bordered={false}>
-          <div className="control-row">
-            <Button onClick={onSeekToStart}>
-              <StepBackwardOutlined />
-            </Button>
-            <Button onClick={onPlay}>
-              <CaretRightOutlined />
-            </Button>
-            <Button onClick={onStop}>
-              <PauseOutlined />
-            </Button>
-          </div>
-          <div className="control-row">
-            {parametersArr.map(p => (
-              <ParameterKnob
-                {...p}
-                key={p.name}
-                onSetParameter={onSetParameter}
-                value={parameters[p.name]}
-              />
-            ))}
-          </div>
-        </Card>
-      </div>
+      <GlobalControl
+        {...globalControlEvents}
+        parameters={parameters}
+        onSetParameter={onSetParameter}
+      />
       <div className="step-sequencer">
         <StepSequencer
           activeNoteIdx={activeNoteIdx}

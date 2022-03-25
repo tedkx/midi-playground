@@ -9,12 +9,12 @@
 - [x] Basic buttons (start/stop)
 - [x] Knob click event
 - [x] Basic controls (tempo, transpose, midi channels, note duration)
-- [ ] Pre-made pattern selection
+- [ ] Multiple parallel patterns
 - [ ] Pad note up/down visual indication (notes left on either direction)
 - [ ] Number of pattern pads
 - [ ] Scales other than chromatic
 - [ ] Pattern randomization
-- [ ] Multiple parallel patterns
+- [ ] Pre-made pattern selection
 - [ ] Maybe use AudioContext metronome instead of/in conjuction with setInterval
 
 ### Altered Scale Practice

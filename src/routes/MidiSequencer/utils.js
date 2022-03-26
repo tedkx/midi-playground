@@ -1,6 +1,7 @@
 import React from 'react';
 import MidiContext from 'components/Midi/Context';
 import { MidiMessages } from 'lib/enums';
+import { defaultNote, defaultVelocity } from './constants';
 
 const getIntervalMillis = (bpm, noteValue) => ((60000 / bpm) * 4) / noteValue;
 
@@ -22,6 +23,16 @@ const stepSequencerDataToSteps = stepSequencersData => {
     }))
   );
 };
+
+const createNote = (
+  note = defaultNote,
+  velocity = defaultVelocity,
+  on = true
+) => ({
+  note,
+  on,
+  velocity,
+});
 
 const usePadEvents = setPadData => {
   const onClick = React.useCallback(
@@ -214,4 +225,4 @@ const useParameters = (parametersArr, parameterValues = {}) => {
   };
 };
 
-export { useNotesPlaying, useParameters, usePadEvents };
+export { createNote, useNotesPlaying, useParameters, usePadEvents };

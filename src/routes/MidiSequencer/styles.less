@@ -63,11 +63,14 @@
   }
 
   .step-sequencer {
+    flex-grow: 1;
+
     .pads-container {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      min-width: 760px;
+      justify-content: flex-start;
+      width: 760px;
+      margin: 0 auto;
     }
 
     .pads-container .keyboard-pad {
@@ -83,7 +86,7 @@
     }
   }
 
-  .midi-channels {
+  .numeric-parameter {
     .title {
       font-size: 12px;
       font-weight: bold;
@@ -96,7 +99,7 @@
       box-shadow: inset 0 1px 1px 1px rgba(0, 0, 0, 0.3);
       font-size: 16px;
       font-weight: bold;
-      padding: 3px 2px 4px;
+      padding: 2px 2px 3px;
       text-align: center;
     }
   }
@@ -109,5 +112,13 @@
 
   & > button {
     margin-left: 4px;
+  }
+}
+
+.sequence-length-modifier {
+  margin-right: 10px;
+
+  .ant-input-number {
+    width: 55px;
   }
 }

@@ -69,7 +69,7 @@ const MidiChannelsSelector = ({
   }, [channels]);
 
   return (
-    <div className="midi-channels">
+    <div className="numeric-parameter midi-channels">
       <Dropdown
         onVisibleChange={setMenuVisible}
         overlay={menu}

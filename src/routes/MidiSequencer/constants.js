@@ -1,8 +1,9 @@
 import { noteToMidi } from 'lib/utils';
 
 const defaultVelocity = 64;
-const defaultNote = 'C5';
+const defaultNote = noteToMidi('C5');
 const defaultPatternLength = 16;
+const maxSequencerNotes = 120;
 
 const createParameter = (min, max, defaultValue, title, centerBased) => ({
   centerBased: centerBased === true,
@@ -80,5 +81,6 @@ export {
   defaultPatternLength,
   defaultVelocity,
   globalParameterData,
+  maxSequencerNotes,
   sequencerParameterData,
 };

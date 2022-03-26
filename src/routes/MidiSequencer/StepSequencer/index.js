@@ -6,6 +6,7 @@ import { sequencerParameterData } from '../constants';
 import { usePadEvents, useParameters } from '../utils';
 import { noteToString } from 'lib/utils';
 import { numOfChannels } from 'lib/constants';
+import SequenceLengthModifier from './SequenceLengthModifier';
 
 const parametersArr = Object.keys(sequencerParameterData).map(key => ({
   ...sequencerParameterData[key],
@@ -30,6 +31,15 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
     [parameters]
   );
 
+  const handleSequenceLengthChanged = React.useCallback(
+    notes =>
+      onSetData(currentData => ({
+        ...currentData,
+        notes,
+      })),
+    [onSetData]
+  );
+
   const handleChannelsChange = React.useCallback(
     channels =>
       onSetData(currentData => ({
@@ -45,6 +55,10 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
     <div className="step-sequencer">
       <div className="controls">
         <Card bordered={false}>
+          <SequenceLengthModifier
+            notes={data?.notes}
+            onChange={handleSequenceLengthChanged}
+          />
           <MidiChannelsSelector
             channels={data?.channels}
             numOfChannels={numOfChannels}
@@ -62,6 +76,7 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
         </Card>
       </div>
       <div className="pads-container">
+        {/* <div className="pads"> */}
         {Array.isArray(data?.notes) &&
           data.notes.map(({ note, on }, idx) => (
             <>
@@ -77,6 +92,7 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
               {(idx + 1) % 8 === 0 && <div className="flex-breaker" />}
             </>
           ))}
+        {/* </div> */}
       </div>
     </div>
   );

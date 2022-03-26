@@ -30,6 +30,15 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
     [parameters]
   );
 
+  const handleChannelsChange = React.useCallback(
+    channels =>
+      onSetData(currentData => ({
+        ...currentData,
+        channels,
+      })),
+    [onSetData]
+  );
+
   const padEvents = usePadEvents(onSetData);
 
   return (
@@ -39,7 +48,7 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
           <MidiChannelsSelector
             channels={data?.channels}
             numOfChannels={numOfChannels}
-            onSetData={onSetData}
+            onSetChannels={handleChannelsChange}
             title="Channels"
           />
           {parametersArr.map(p => (

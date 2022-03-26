@@ -4,7 +4,7 @@ import { Dropdown, Menu, Switch } from 'antd';
 const MidiChannelsSelector = ({
   channels,
   numOfChannels,
-  onSetData,
+  onSetChannels,
   title = 'Channels',
 }) => {
   const [menuVisible, setMenuVisible] = React.useState(false);
@@ -14,17 +14,17 @@ const MidiChannelsSelector = ({
     [setMenuVisible]
   );
 
-  const onSetChannels = React.useCallback(
+  const handleSetChannels = React.useCallback(
     (channelNum, checked) =>
-      onSetData(({ channels: currentChannels, ...currentData }) => ({
-        ...currentData,
-        channels: checked
-          ? Array.from(new Set([...currentChannels, channelNum])).sort((a, b) =>
+      onSetChannels(
+        checked
+          ? Array.from(new Set([...channels, channelNum])).sort((a, b) =>
               a > b ? 1 : a < b ? -1 : 0
             )
-          : currentChannels.filter(ch => ch !== channelNum),
-      })),
-    [numOfChannels, onSetData]
+          : channels.filter(ch => ch !== channelNum)
+      ),
+
+    [numOfChannels, onSetChannels, channels]
   );
 
   const menu = React.useMemo(
@@ -36,7 +36,7 @@ const MidiChannelsSelector = ({
               <div>{idx + 1} </div>
               <Switch
                 checked={channels.includes(idx + 1)}
-                onChange={value => onSetChannels(idx + 1, value)}
+                onChange={value => handleSetChannels(idx + 1, value)}
                 size="small"
               />
             </div>

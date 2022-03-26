@@ -1,9 +1,9 @@
 import React from 'react';
-import { Card } from 'antd';
+import { Card, InputNumber } from 'antd';
 import { Pad, ParameterKnob } from 'components/KeyboardComponents';
 import MidiChannelsSelector from './MidiChannelsSelector';
-import { sequencerParameterData } from './constants';
-import { usePadEvents, useParameters } from './utils';
+import { sequencerParameterData } from '../constants';
+import { usePadEvents, useParameters } from '../utils';
 import { noteToString } from 'lib/utils';
 import { numOfChannels } from 'lib/constants';
 

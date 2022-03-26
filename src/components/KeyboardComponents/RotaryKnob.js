@@ -79,9 +79,10 @@ const useWheelValueChanging = ({
     elementRef.current.addEventListener('wheel', onWheel, { passive: false });
 
     return () => {
-      elementRef.current.removeEventListener('wheel', onWheel, {
-        passive: false,
-      });
+      if (elementRef.current)
+        elementRef.current.removeEventListener('wheel', onWheel, {
+          passive: false,
+        });
     };
   }, []);
 

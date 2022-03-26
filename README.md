@@ -9,9 +9,10 @@
 - [x] Basic buttons (start/stop)
 - [x] Knob click event
 - [x] Basic controls (tempo, transpose, midi channels, note duration)
+- [x] Number of pattern pads
+- [ ] Change NoteValue parameter to dropdown
 - [ ] Multiple parallel patterns
 - [ ] Pad note up/down visual indication (notes left on either direction)
-- [ ] Number of pattern pads
 - [ ] Scales other than chromatic
 - [ ] Pattern randomization
 - [ ] Pre-made pattern selection

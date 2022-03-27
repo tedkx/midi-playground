@@ -4,17 +4,10 @@ import { useNotesPlaying, useParameters } from './utils';
 import GlobalControl, { globalParametersArr } from './GlobalControl';
 import StepSequencer from './StepSequencer';
 
-const channels = [1, 2, 3, 4];
-
 const MidiSequencer = () => {
-  const [stepSequencersData, setStepSequencersData] = React.useState([
-    {
-      channels,
-      noteDuration: defaultPattern.noteDuration,
-      notes: defaultPattern.notes,
-      transpose: 0,
-    },
-  ]);
+  const [stepSequencersData, setStepSequencersData] = React.useState(
+    defaultPattern.stepSequencers
+  );
 
   const [activeSequencerIdx, setActiveSequencerIdx] = React.useState(0);
   const onSetStepSequencerData = React.useCallback(

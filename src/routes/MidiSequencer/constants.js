@@ -1,4 +1,4 @@
-import { noteToMidi } from 'lib/utils';
+import { noteToMidi } from 'lib/midi';
 import tunes from './tunes';
 
 const defaultVelocity = 64;
@@ -21,9 +21,10 @@ const formatPattern = ({ stepSequencers, ...pattern }) => ({
     transpose: 0,
     notes: notes.split(' ').map(item => {
       const [note, velocityStr] = item.split(':');
-      const velocity = parseInt(velocityStr);
+      const pause = note === 'x';
+      const velocity = pause ? 0 : parseInt(velocityStr);
       return {
-        note: noteToMidi(note),
+        note: pause ? null : noteToMidi(note),
         on: velocity !== 0,
         velocity: isNaN(velocity)
           ? pattern.velocity || defaultVelocity
@@ -33,7 +34,7 @@ const formatPattern = ({ stepSequencers, ...pattern }) => ({
   })),
 });
 
-const defaultPattern = formatPattern(tunes.metropolis);
+const defaultPattern = formatPattern(tunes.aintNobody);
 
 const sequencerParameterData = {
   noteDuration: createParameter(

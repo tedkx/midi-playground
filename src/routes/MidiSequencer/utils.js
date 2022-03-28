@@ -1,28 +1,10 @@
 import React from 'react';
 import MidiContext from 'components/Midi/Context';
 import { MidiMessages } from 'lib/enums';
+import { leastCommonMultiple } from 'lib/utils';
 import { defaultNote, defaultVelocity } from './constants';
 
 const getIntervalMillis = (bpm, noteValue) => ((60000 / bpm) * 4) / noteValue;
-
-const stepSequencerDataToSteps = stepSequencersData => {
-  if (!Array.isArray(stepSequencersData)) return [];
-
-  let stepsLength = stepSequencersData[0].notes.length;
-  for (let i = 0; i < stepSequencersData.length; i++)
-    if (stepSequencersData[i].length > stepsLength)
-      stepsLength = stepSequencersData[i].length;
-
-  return Array.from(Array(stepsLength)).map((_, idx) =>
-    stepSequencersData.map(({ channels, notes, noteDuration, transpose }) => ({
-      channels,
-      duration: noteDuration,
-      note: notes[idx].note + transpose,
-      on: notes[idx].on,
-      velocity: notes[idx].velocity,
-    }))
-  );
-};
 
 const createNote = (
   note = defaultNote,
@@ -83,9 +65,10 @@ const useNotesPlaying = (
     ...parameters,
     intervalId: null,
     intervalMillis: getIntervalMillis(bpm, noteValue),
-    noteIdx: 0,
-    steps: stepSequencerDataToSteps(stepSequencersData),
+    stepIdx: 0,
+    sequencersData: [],
     tempoChangeRequested: null,
+    totalSteps: 0,
   });
 
   // if interval active, store new bpm to tempoChangeRequested
@@ -103,14 +86,22 @@ const useNotesPlaying = (
     });
   }, [parameters]);
 
-  // same for notes
+  // same for sequencer data
   React.useEffect(() => {
-    ref.current.steps = stepSequencerDataToSteps(stepSequencersData);
+    if (Array.isArray(stepSequencersData)) {
+      ref.current.sequencersData = stepSequencersData;
+
+      const lengths = Array.from(
+        new Set(stepSequencersData.map(seq => seq.notes.length))
+      );
+      ref.current.totalSteps = leastCommonMultiple(lengths);
+    }
   }, [stepSequencersData]);
 
   // the interval callback where all the interesting stuff take place
   const playNote = React.useCallback(() => {
-    const { steps, noteIdx, tempoChangeRequested } = ref.current;
+    const { sequencersData, stepIdx, tempoChangeRequested, totalSteps } =
+      ref.current;
 
     // pending temp change. set intervalMillis, reset tempoChangeRequested and restart interval
     if (tempoChangeRequested) {
@@ -120,27 +111,28 @@ const useNotesPlaying = (
       ref.current.intervalId = setInterval(playNote, tempoChangeRequested);
     }
 
-    const stepData = steps[noteIdx];
-    setActiveNoteIdx(noteIdx);
+    setActiveNoteIdx(stepIdx);
 
-    ref.current.noteIdx++;
-    if (ref.current.noteIdx >= steps.length) ref.current.noteIdx = 0;
+    ref.current.stepIdx++;
+    if (ref.current.stepIdx >= totalSteps) ref.current.stepIdx = 0;
 
     // pad is not on, no sound required
-    const { messages, messagesOffGroups } = stepData.reduce(
-      (obj, { channels, duration, note, on, velocity }) => {
+    const { messages, messagesOffGroups } = sequencersData.reduce(
+      (obj, { channels, noteDuration, notes, transpose }) => {
+        const { note, on, velocity } = notes[stepIdx % notes.length];
         if (on && velocity > 0)
           channels.forEach(channel => {
+            const actualNote = note + transpose;
             obj.messages.push([
               MidiMessages[`Channel${channel}NoteOn`],
-              note,
+              actualNote,
               velocity,
             ]);
-            if (!obj.messagesOffGroups[duration])
-              obj.messagesOffGroups[duration] = [];
-            obj.messagesOffGroups[duration].push([
+            if (!obj.messagesOffGroups[noteDuration])
+              obj.messagesOffGroups[noteDuration] = [];
+            obj.messagesOffGroups[noteDuration].push([
               MidiMessages[`Channel${channel}NoteOn`],
-              note,
+              actualNote,
               0,
             ]);
           });
@@ -177,7 +169,7 @@ const useNotesPlaying = (
   // start/stop/seek to start button callbacks
   const onSeekToStart = React.useCallback(() => {
     setActiveNoteIdx(0);
-    ref.current.noteIdx = 0;
+    ref.current.stepIdx = 0;
   }, [setActiveNoteIdx]);
 
   const onPlay = React.useCallback(() => {

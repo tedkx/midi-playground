@@ -1,31 +1,13 @@
-import { noteOnStart, noteOffStart, numOfChannels, notes } from './constants';
+const greatestCommonDivisor = (a, b) => (!b ? a : gcd(b, a % b));
 
-const noteToString = number => {
-  const octave = Math.floor(number / notes.length);
-  const note = number % notes.length;
-  return `${notes[note]}${octave}`;
-};
+const leastCommonMultipleInner = (a, b) => (a * b) / gcd(a, b);
 
-const noteToMidi = str => {
-  const [_, note, octave] = (str || '').match(/(.{1,2})(\d{1})/) || [];
-  return !note || !octave
-    ? null
-    : parseInt(octave) * notes.length +
-        notes.findIndex(n => n === note.toUpperCase());
-};
+const leastCommonMultiple = (...numbers) =>
+  numbers
+    .slice(1)
+    .reduce(
+      (current, num) => leastCommonMultipleInner(current, num),
+      numbers[0]
+    );
 
-// check for noteOn number
-const isNoteOn = midiMessage =>
-  midiMessage[0] >= noteOnStart &&
-  midiMessage[0] <= noteOnStart + numOfChannels &&
-  midiMessage[2] > 0;
-
-// either noteOff number or noteOn and velocity is 0
-const isNoteOff = midiMessage =>
-  (midiMessage[0] >= noteOffStart &&
-    midiMessage[0] <= noteOffStart + numOfChannels) ||
-  (midiMessage[0] >= noteOnStart &&
-    midiMessage[0] <= noteOnStart + numOfChannels &&
-    midiMessage[2] === 0);
-
-export { isNoteOn, isNoteOff, noteToMidi, noteToString };
+export { greatestCommonDivisor, leastCommonMultiple };

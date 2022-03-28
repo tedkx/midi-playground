@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Collapse } from 'antd';
 import { CheckCircleFilled, InfoCircleOutlined } from '@ant-design/icons';
-import { noteToString } from 'lib/utils';
+import { noteToString } from 'lib/midi';
 import {
   useNotesListening,
   useScenarioHelp,

@@ -1,7 +1,7 @@
 import React from 'react';
 import MidiContext from 'components/Midi/Context';
 import { MidiPortState } from 'lib/enums';
-import { isNoteOn, isNoteOff, noteToString, noteToMidi } from 'lib/utils';
+import { isNoteOn, isNoteOff, noteToString, noteToMidi } from 'lib/midi';
 import { noteOnStart, noteOffStart, scales } from 'lib/constants';
 import {
   doneTimeoutMillis,

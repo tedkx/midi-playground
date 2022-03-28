@@ -4,7 +4,7 @@ import { Pad, ParameterKnob } from 'components/KeyboardComponents';
 import MidiChannelsSelector from './MidiChannelsSelector';
 import { sequencerParameterData } from '../constants';
 import { usePadEvents, useParameters } from '../utils';
-import { noteToString } from 'lib/utils';
+import { noteToString } from 'lib/midi';
 import { numOfChannels } from 'lib/constants';
 import SequenceLengthModifier from './SequenceLengthModifier';
 
@@ -15,6 +15,14 @@ const parametersArr = Object.keys(sequencerParameterData).map(key => ({
 
 const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
   const { noteDuration, transpose } = data;
+
+  const sequencerActiveNoteIdx = React.useMemo(
+    () =>
+      data && Array.isArray(data.notes)
+        ? activeNoteIdx % data.notes.length
+        : activeNoteIdx,
+    [activeNoteIdx, data]
+  );
 
   const parameterValues = React.useMemo(
     () => ({ noteDuration, transpose }),
@@ -76,12 +84,11 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
         </Card>
       </div>
       <div className="pads-container">
-        {/* <div className="pads"> */}
         {Array.isArray(data?.notes) &&
           data.notes.map(({ note, on }, idx) => (
             <>
               <Pad
-                active={activeNoteIdx === idx}
+                active={sequencerActiveNoteIdx === idx}
                 index={idx}
                 key={note}
                 on={on}
@@ -92,7 +99,6 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
               {(idx + 1) % 8 === 0 && <div className="flex-breaker" />}
             </>
           ))}
-        {/* </div> */}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from 'antd';
 import MidiContext from 'components/Midi/Context';
 import { MidiMessageCodes, MidiMessages, MidiPortState } from 'lib/enums';
-import { noteToString } from 'lib/utils';
+import { noteToString } from 'lib/midi';
 
 const style = {
   fontFamily: 'Consolas',

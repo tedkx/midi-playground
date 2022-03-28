@@ -59,6 +59,25 @@ const tunez = {
       },
     ],
   },
+
+  // chaka khan's ain't no nobody - testing polyrhythmic sequences
+  aintNobody: {
+    bpm: 100,
+    noteValue: 16,
+    stepSequencers: [
+      {
+        channels: [1],
+        noteDuration: 100,
+        notes: 'D#3 A#3 C#4 D#4 D#4 A#4 C#5 D#5 D#6',
+      },
+      {
+        channels: [1],
+        noteDuration: 100,
+        notes:
+          'x x x x F#6:100 x F#6:100 x F#6:100 D#6:100 A#5:100 G#6:100 x G#6:100 F6:100 C#6:100',
+      },
+    ],
+  },
 };
 
 export default tunez;

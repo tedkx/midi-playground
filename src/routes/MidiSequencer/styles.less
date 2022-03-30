@@ -38,6 +38,11 @@
         border: none;
       }
     }
+
+    .note-value-select .ant-select-selection-item svg {
+      margin-top: -3px;
+      transform: scale(0.6);
+    }
   }
 
   .controls {
@@ -120,5 +125,22 @@
 
   .ant-input-number {
     width: 55px;
+  }
+}
+
+.note-value-select-list {
+  .ant-select-item {
+    padding: 0px;
+    text-align: center;
+
+    .ant-select-item-option-content {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  svg {
+    transform: scale(0.8);
   }
 }

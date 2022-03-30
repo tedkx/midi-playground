@@ -10,7 +10,7 @@
 - [x] Knob click event
 - [x] Basic controls (tempo, transpose, midi channels, note duration)
 - [x] Number of pattern pads
-- [ ] Change NoteValue parameter to dropdown
+- [x] Change NoteValue parameter to dropdown
 - [ ] Multiple parallel patterns
 - [ ] Pad note up/down visual indication (notes left on either direction)
 - [ ] Scales other than chromatic

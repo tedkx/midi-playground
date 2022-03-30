@@ -37,14 +37,18 @@ const MidiSequencerGlobalControl = ({
           </Button>
         </div>
         <div className="control-row">
-          {globalParametersArr.map(p => (
-            <ParameterKnob
-              {...p}
-              key={p.name}
-              onSetParameter={onSetParameter}
-              value={parameters[p.name]}
-            />
-          ))}
+          <ParameterKnob
+            {...globalParameterData.bpm}
+            name="bpm"
+            onSetParameter={onSetParameter}
+            value={parameters.bpm}
+          />
+          <ParameterKnob
+            {...globalParameterData.noteValue}
+            name="noteValue"
+            onSetParameter={onSetParameter}
+            value={parameters.noteValue}
+          />
         </div>
       </Card>
     </div>

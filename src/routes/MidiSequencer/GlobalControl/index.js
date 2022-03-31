@@ -54,14 +54,18 @@ const MidiSequencerGlobalControl = ({
             onSetParameter={onSetParameter}
             value={parameters.bpm}
           />
-          <Select
-            className="note-value-select"
-            dropdownClassName="note-value-select-list"
-            listHeight={280}
-            onSelect={value => onSetParameter('noteValue', value)}
-            options={notesOptions}
-            size="large"
-          />
+          <div className="select-parameter">
+            <div className="title">NoteValue</div>
+            <Select
+              className="note-value-select"
+              dropdownClassName="note-value-select-list"
+              listHeight={280}
+              onSelect={value => onSetParameter('noteValue', value)}
+              options={notesOptions}
+              size="large"
+              value={parameters.noteValue}
+            />
+          </div>
         </div>
       </Card>
     </div>

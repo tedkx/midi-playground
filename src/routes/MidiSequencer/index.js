@@ -33,8 +33,11 @@ const MidiSequencer = () => {
     <div className="sequencer">
       <GlobalControl
         {...globalControlEvents}
+        activeStepSequencerIdx={activeSequencerIdx}
         parameters={parameters}
         onSetParameter={onSetParameter}
+        onSetActiveStepSequencerIdx={setActiveSequencerIdx}
+        stepSequencersData={stepSequencersData}
       />
       <div className="step-sequencer">
         <StepSequencer

@@ -51,11 +51,13 @@ const tunez = {
         channels: [1],
         noteDuration: 100,
         notes: 'C5 G5 D6 C7 B6 F6 E5 B5 F#6 F7 E7 A#6 D7 C#7 A6 C7 B6 G#6',
+        title: 'Voice',
       },
       {
         channels: [1],
         noteDuration: 100,
         notes: 'F5 C6 G6 F7 E7 A#6 A5 E6 B6 A#7 A7 D#7 G7 F#7 D7 F7 E7 C#7',
+        title: 'Voice 4th up',
       },
     ],
   },
@@ -69,12 +71,14 @@ const tunez = {
         channels: [1],
         noteDuration: 100,
         notes: 'D#3 A#3 C#4 D#4 D#4 A#4 C#5 D#5 D#6',
+        title: 'Sampler',
       },
       {
         channels: [1],
         noteDuration: 100,
         notes:
           'x x x x F#6:100 x F#6:100 x F#6:100 D#6:100 A#5:100 G#6:100 x G#6:100 F6:100 C#6:100',
+        title: 'Melody',
       },
     ],
   },

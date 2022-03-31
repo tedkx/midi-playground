@@ -16,22 +16,25 @@ const createParameter = (min, max, defaultValue, title, centerBased) => ({
 
 const formatPattern = ({ stepSequencers, ...pattern }) => ({
   ...pattern,
-  stepSequencers: stepSequencers.map(({ notes, ...stepSequencer }) => ({
-    ...stepSequencer,
-    transpose: 0,
-    notes: notes.split(' ').map(item => {
-      const [note, velocityStr] = item.split(':');
-      const pause = note === 'x';
-      const velocity = pause ? 0 : parseInt(velocityStr);
-      return {
-        note: pause ? null : noteToMidi(note),
-        on: velocity !== 0,
-        velocity: isNaN(velocity)
-          ? pattern.velocity || defaultVelocity
-          : velocity,
-      };
-    }),
-  })),
+  stepSequencers: stepSequencers.map(
+    ({ notes, title, ...stepSequencer }, idx) => ({
+      ...stepSequencer,
+      title: title || `Step Sequencer ${idx + 1}`,
+      transpose: 0,
+      notes: notes.split(' ').map(item => {
+        const [note, velocityStr] = item.split(':');
+        const pause = note === 'x';
+        const velocity = pause ? 0 : parseInt(velocityStr);
+        return {
+          note: pause ? null : noteToMidi(note),
+          on: velocity !== 0,
+          velocity: isNaN(velocity)
+            ? pattern.velocity || defaultVelocity
+            : velocity,
+        };
+      }),
+    })
+  ),
 });
 
 const defaultPattern = formatPattern(tunes.aintNobody);

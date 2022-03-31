@@ -7,6 +7,7 @@ import {
   StepBackwardOutlined,
 } from '@ant-design/icons';
 import { globalParameterData } from '../constants';
+import StepSequencerSummary from './StepSequencerSummary';
 
 import { Note1, Note2, Note4, Note8, Note16, Note32 } from 'assets/notes';
 
@@ -27,11 +28,14 @@ export const globalParametersArr = Object.keys(globalParameterData).map(
 );
 
 const MidiSequencerGlobalControl = ({
+  activeStepSequencerIdx,
   onPlay,
   onSeekToStart,
+  onSetActiveStepSequencerIdx,
   onSetParameter,
   onStop,
   parameters,
+  stepSequencersData,
 }) => {
   return (
     <div className="global-controls">
@@ -67,6 +71,14 @@ const MidiSequencerGlobalControl = ({
             />
           </div>
         </div>
+        {stepSequencersData.map((seq, idx) => (
+          <div className="control-row step-sequencer-summary-row" key={idx}>
+            <StepSequencerSummary
+              active={activeStepSequencerIdx === idx}
+              data={seq}
+            />
+          </div>
+        ))}
       </Card>
     </div>
   );

@@ -1,4 +1,4 @@
-@control-row-margin: 18px;
+@control-row-padding: 18px;
 
 .sequencer {
   display: flex;
@@ -17,26 +17,11 @@
 
     .control-row {
       align-items: center;
+      border-bottom: solid 1px @dark-color;
       display: flex;
       justify-content: space-evenly;
-      margin: @control-row-margin;
-      margin-bottom: 36px;
+      padding: @control-row-padding;
       position: relative;
-
-      &::after {
-        border-bottom: solid 1px @dark-color;
-        bottom: -@control-row-margin;
-        content: ' ';
-        position: absolute;
-        left: -@control-row-margin;
-        right: -@control-row-margin;
-      }
-      &:last-child {
-        margin-bottom: @control-row-margin;
-      }
-      &:last-child:after {
-        border: none;
-      }
     }
 
     .note-value-select {
@@ -147,5 +132,22 @@
   }
   svg {
     transform: scale(0.7);
+  }
+}
+
+.step-sequencer-summary {
+  min-height: 80px;
+  padding: 6px 10px;
+
+  &.active {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &.active .title {
+    font-weight: bold;
+  }
+
+  .body {
+    display: flex;
   }
 }

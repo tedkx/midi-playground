@@ -1,12 +1,16 @@
 import React from 'react';
 import { defaultPattern } from './constants';
-import { useNotesPlaying, useParameters } from './utils';
+import {
+  createDefaultStepSequencersData,
+  useNotesPlaying,
+  useParameters,
+} from './utils';
 import GlobalControl, { globalParametersArr } from './GlobalControl';
 import StepSequencer from './StepSequencer';
 
 const MidiSequencer = () => {
   const [stepSequencersData, setStepSequencersData] = React.useState(
-    defaultPattern.stepSequencers
+    createDefaultStepSequencersData(defaultPattern.stepSequencers)
   );
 
   const [activeSequencerIdx, setActiveSequencerIdx] = React.useState(0);

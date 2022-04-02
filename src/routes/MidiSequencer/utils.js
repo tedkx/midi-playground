@@ -2,7 +2,11 @@ import React from 'react';
 import MidiContext from 'components/Midi/Context';
 import { MidiMessages } from 'lib/enums';
 import { leastCommonMultiple } from 'lib/utils';
-import { defaultNote, defaultVelocity } from './constants';
+import {
+  defaultNote,
+  defaultPatternLength,
+  defaultVelocity,
+} from './constants';
 
 const getIntervalMillis = (bpm, noteValue) => ((60000 / bpm) * 4) / noteValue;
 
@@ -217,4 +221,26 @@ const useParameters = (parametersArr, parameterValues = {}) => {
   };
 };
 
-export { createNote, useNotesPlaying, useParameters, usePadEvents };
+const createDefaultStepSequencerData = (stepSequencerData, idx) => ({
+  channels: stepSequencerData?.channels || [1],
+  mute: stepSequencerData?.mute || false,
+  noteDuration: stepSequencerData?.noteDuration || 100,
+  notes:
+    stepSequencerData?.notes ||
+    Array.from(Array(defaultPatternLength)).map(() => createNote()),
+  solo: stepSequencerData?.solo || false,
+  title: stepSequencerData?.title || `StepSequencer ${idx + 1}`,
+  transpose: stepSequencerData?.transpose || 0,
+});
+const createDefaultStepSequencersData = tuneSequencers => {
+  const sequencers = Array.isArray(tuneSequencers) ? tuneSequencers : [];
+  return sequencers.map(createDefaultStepSequencerData);
+};
+
+export {
+  createDefaultStepSequencersData,
+  createNote,
+  useNotesPlaying,
+  useParameters,
+  usePadEvents,
+};

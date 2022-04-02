@@ -17,9 +17,7 @@ const LatchingButton = ({
 
   const handleClick = React.useCallback(
     e => {
-      setActive(
-        currentActive => console.log('clicked', currentActive) || !currentActive
-      );
+      setActive(currentActive => !currentActive);
       if (onClick) onClick(e);
     },
     [setActive, onClick]

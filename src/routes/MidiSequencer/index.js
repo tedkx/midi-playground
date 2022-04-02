@@ -41,6 +41,7 @@ const MidiSequencer = () => {
         parameters={parameters}
         onSetParameter={onSetParameter}
         onSetActiveStepSequencerIdx={setActiveSequencerIdx}
+        onSetData={setStepSequencersData}
         stepSequencersData={stepSequencersData}
       />
       <div className="step-sequencer">

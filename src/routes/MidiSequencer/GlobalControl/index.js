@@ -32,11 +32,24 @@ const MidiSequencerGlobalControl = ({
   onPlay,
   onSeekToStart,
   onSetActiveStepSequencerIdx,
+  onSetData,
   onSetParameter,
   onStop,
   parameters,
   stepSequencersData,
 }) => {
+  const handleSetStepSequencerParameter = React.useCallback(
+    (idx, name, value) =>
+      onSetData(currentData =>
+        Array.isArray(currentData)
+          ? currentData.map((seqData, seqIdx) =>
+              seqIdx === idx ? { ...seqData, [name]: value } : seqData
+            )
+          : currentData
+      ),
+    [onSetData]
+  );
+
   return (
     <div className="global-controls">
       <Card bordered={false}>
@@ -76,6 +89,9 @@ const MidiSequencerGlobalControl = ({
             active={activeStepSequencerIdx === idx}
             data={seq}
             onSelect={() => onSetActiveStepSequencerIdx(idx)}
+            onSetParameter={(name, value) =>
+              handleSetStepSequencerParameter(idx, name, value)
+            }
             key={idx}
           />
         ))}

@@ -1,6 +1,9 @@
+@glare-box-shadow: inset 1px 1px #bbb;
+@latching-active-box-shadow: inset 0 0 2px 2px rgba(0, 0, 0, 0.4);
+
 .keyboard-button {
   border-radius: 3px;
-  box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.5), inset 1px 1px #bbb;
+  box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.5), @glare-box-shadow;
   background-color: #888a8f;
   color: @dark-color;
   overflow: hidden;
@@ -30,9 +33,32 @@
   }
 }
 
+.keyboard-latching-button {
+  &.active {
+    background: #999b9f;
+  }
+
+  &.blue.active {
+    background: #2bb3ff;
+    box-shadow: 0 0 4px 4px rgba(33, 169, 255, 0.5), @latching-active-box-shadow;
+    /* @glare-box-shadow; */
+  }
+
+  &.red.active {
+    background: #ff5370;
+    box-shadow: 0 0 4px 4px rgba(255, 83, 112, 0.6), @latching-active-box-shadow;
+    /* @glare-box-shadow; */
+  }
+
+  &.orange.active {
+    background: #ff6700;
+    box-shadow: 0 0 4px 4px rgba(245, 128, 37, 0.7), @latching-active-box-shadow;
+  }
+}
+
 .keyboard-pad {
   border-radius: 3px;
-  box-shadow: 0 0 2px 2px #000, inset 1px 1px #bbb;
+  box-shadow: 0 0 2px 2px #000, @glare-box-shadow;
   background-color: #888a8f;
   height: 80px;
   overflow: hidden;

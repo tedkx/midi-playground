@@ -75,6 +75,7 @@ const MidiSequencerGlobalControl = ({
           <StepSequencerSummary
             active={activeStepSequencerIdx === idx}
             data={seq}
+            onSelect={() => onSetActiveStepSequencerIdx(idx)}
             key={idx}
           />
         ))}

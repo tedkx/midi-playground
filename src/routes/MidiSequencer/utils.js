@@ -95,17 +95,28 @@ const useNotesPlaying = (
     if (Array.isArray(stepSequencersData)) {
       ref.current.sequencersData = stepSequencersData;
 
-      const lengths = Array.from(
-        new Set(stepSequencersData.map(seq => seq.notes.length))
-      );
-      ref.current.totalSteps = leastCommonMultiple(lengths);
+      const lengths = new Set();
+      let atLeastOneSolo = false;
+
+      stepSequencersData.forEach(seq => {
+        lengths.add(seq.notes.length);
+        atLeastOneSolo ||= seq.solo;
+      });
+
+      ref.current.atLeastOneSolo = atLeastOneSolo;
+      ref.current.totalSteps = leastCommonMultiple(Array.from(lengths));
     }
   }, [stepSequencersData]);
 
   // the interval callback where all the interesting stuff take place
   const playNote = React.useCallback(() => {
-    const { sequencersData, stepIdx, tempoChangeRequested, totalSteps } =
-      ref.current;
+    const {
+      atLeastOneSolo,
+      sequencersData,
+      stepIdx,
+      tempoChangeRequested,
+      totalSteps,
+    } = ref.current;
 
     // pending temp change. set intervalMillis, reset tempoChangeRequested and restart interval
     if (tempoChangeRequested) {
@@ -122,7 +133,10 @@ const useNotesPlaying = (
 
     // pad is not on, no sound required
     const { messages, messagesOffGroups } = sequencersData.reduce(
-      (obj, { channels, noteDuration, notes, transpose }) => {
+      (obj, { channels, mute, noteDuration, notes, solo, transpose }) => {
+        if (atLeastOneSolo && !solo) return obj;
+        if (mute) return obj;
+
         const { note, on, velocity } = notes[stepIdx % notes.length];
         if (on && velocity > 0)
           channels.forEach(channel => {

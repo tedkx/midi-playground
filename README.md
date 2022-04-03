@@ -11,7 +11,7 @@
 - [x] Basic controls (tempo, transpose, midi channels, note duration)
 - [x] Number of pattern pads
 - [x] Change NoteValue parameter to dropdown
-- [ ] Multiple parallel patterns
+- [x] Multiple parallel patterns
 - [ ] Pad note up/down visual indication (notes left on either direction)
 - [ ] Scales other than chromatic
 - [ ] Pattern randomization

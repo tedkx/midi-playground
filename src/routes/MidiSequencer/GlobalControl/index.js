@@ -84,6 +84,9 @@ const MidiSequencerGlobalControl = ({
             />
           </div>
         </div>
+      </Card>
+      <br />
+      <Card bordered={false}>
         {stepSequencersData.map((seq, idx) => (
           <StepSequencerSummary
             active={activeStepSequencerIdx === idx}

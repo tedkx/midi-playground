@@ -54,6 +54,17 @@ const globalParameterData = {
   noteValue: createParameter(1, 32, defaultPattern.noteValue, 'NoteValue'),
 };
 
+const stepSequencerColors = [
+  '#709FB0',
+  '#849974',
+  '#765285',
+  '#AB3E16',
+  '#2A93D5',
+  '#6CBF84',
+  '#E2B091',
+  '#36384C',
+];
+
 export {
   defaultNote,
   defaultPattern,
@@ -62,4 +73,5 @@ export {
   globalParameterData,
   maxSequencerNotes,
   sequencerParameterData,
+  stepSequencerColors,
 };

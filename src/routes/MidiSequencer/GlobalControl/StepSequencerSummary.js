@@ -22,8 +22,14 @@ const StepSequencerSummary = ({ active, data, onSelect, onSetParameter }) => {
       className={`step-sequencer-summary ${active && 'active'}`}
       onClick={onSelect}
     >
-      <div className="title">{title}</div>
-      <div className="body">
+      <div className="step-sequencer-title">
+        <div
+          className="step-sequencer-color"
+          style={{ backgroundColor: data?.color }}
+        ></div>
+        <span>{title}</span>
+      </div>
+      <div className="sequencer-summary-body">
         <div className="flex-spacer"></div>
         <div className="solo-mute">
           <LatchingButton

@@ -46,6 +46,7 @@
       margin: 0;
 
       .ant-card-body {
+        align-items: flex-start;
         display: flex;
         padding: 8px;
       }
@@ -150,11 +151,11 @@
     background: rgba(255, 255, 255, 0.1);
   }
 
-  &.active .title {
+  &.active .step-sequencer-title {
     font-weight: bold;
   }
 
-  .body {
+  .sequencer-summary-body {
     display: flex;
   }
 
@@ -173,5 +174,22 @@
       border-bottom-left-radius: 0;
       border-left: 0;
     }
+  }
+}
+
+.step-sequencer-title {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+
+  & > span {
+    flex-grow: 1;
+  }
+
+  .step-sequencer-color {
+    border: solid 1px #fff;
+    height: 14px;
+    margin-right: 4px;
+    width: 14px;
   }
 }

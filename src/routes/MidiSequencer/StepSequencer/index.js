@@ -63,7 +63,13 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
     <div className="step-sequencer">
       <div className="controls">
         <Card bordered={false}>
-          <div className="sequencer-title">{data?.title}</div>
+          <div className="step-sequencer-title">
+            <div
+              className="step-sequencer-color"
+              style={{ backgroundColor: data?.color }}
+            ></div>
+            <span>{data?.title}</span>
+          </div>
           <div className="flex-spacer"></div>
           <SequenceLengthModifier
             notes={data?.notes}

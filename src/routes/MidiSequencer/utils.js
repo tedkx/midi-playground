@@ -6,6 +6,7 @@ import {
   defaultNote,
   defaultPatternLength,
   defaultVelocity,
+  stepSequencerColors,
 } from './constants';
 
 const getIntervalMillis = (bpm, noteValue) => ((60000 / bpm) * 4) / noteValue;
@@ -237,6 +238,7 @@ const useParameters = (parametersArr, parameterValues = {}) => {
 
 const createDefaultStepSequencerData = (stepSequencerData, idx) => ({
   channels: stepSequencerData?.channels || [1],
+  color: stepSequencerColors[idx % stepSequencerColors.length],
   mute: stepSequencerData?.mute || false,
   noteDuration: stepSequencerData?.noteDuration || 100,
   notes:

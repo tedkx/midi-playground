@@ -17,6 +17,7 @@
 - [ ] Scales other than chromatic
 - [ ] Pattern randomization
 - [ ] Pre-made pattern selection
+- [ ] Import/export to midi
 - [ ] Maybe use AudioContext metronome instead of/in conjuction with setInterval
 
 ### Altered Scale Practice

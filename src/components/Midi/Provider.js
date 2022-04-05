@@ -13,6 +13,7 @@ const MidiContextProvider = ({ children }) => {
   const defaultContextValue = React.useMemo(
     () => ({
       error: null,
+      initialize: null,
       ready: false,
       selectedInput: null,
       selectedOutput: null,
@@ -126,6 +127,7 @@ const MidiContextProvider = ({ children }) => {
         .catch(ex =>
           setContextValue({
             ...defaultContextValue,
+            initialize,
             error: ex.message,
           })
         );

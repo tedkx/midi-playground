@@ -1,5 +1,6 @@
 import React from 'react';
-import { Form, Modal, Select } from 'antd';
+import { Button, Form, Modal, Select } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons';
 
 const formatOption = inputOutput => ({
   disabled: inputOutput.state !== 'connected',
@@ -9,7 +10,8 @@ const formatOption = inputOutput => ({
 
 const SettingsModal = ({ contextValue, setContextValue, ...props }) => {
   const { visible } = props;
-  const { inputs, outputs, selectedInput, selectedOutput } = contextValue || {};
+  const { initialize, inputs, outputs, selectedInput, selectedOutput } =
+    contextValue || {};
 
   const { inputOptions = [], outputOptions = [] } = React.useMemo(
     () =>
@@ -58,6 +60,11 @@ const SettingsModal = ({ contextValue, setContextValue, ...props }) => {
             value={selectedOutput?.id || null}
           />
         </Form.Item>
+        <div style={{ textAlign: 'right' }}>
+          <Button type="primary" onClick={initialize}>
+            Re-Initialize Midi <ReloadOutlined />
+          </Button>
+        </div>
       </Form>
     </Modal>
   );

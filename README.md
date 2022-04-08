@@ -12,6 +12,7 @@
 - [x] Number of pattern pads
 - [x] Change NoteValue parameter to dropdown
 - [x] Multiple parallel patterns
+- [ ] Parallel patterns reset meters count
 - [ ] Step recording
 - [ ] Pad note up/down visual indication (notes left on either direction)
 - [ ] Scales other than chromatic

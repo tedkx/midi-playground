@@ -37,7 +37,7 @@ const formatPattern = ({ stepSequencers, ...pattern }) => ({
   ),
 });
 
-const defaultPattern = formatPattern(tunes.aintNobody);
+const defaultPattern = formatPattern(tunes.darkKnight);
 
 const sequencerParameterData = {
   noteDuration: createParameter(

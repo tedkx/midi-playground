@@ -82,6 +82,42 @@ const tunez = {
       },
     ],
   },
+
+  // a dark knight theme
+  darkKnight: {
+    bpm: 100,
+    noteValue: 16,
+    stepSequencers: [
+      {
+        channels: [15, 16],
+        noteDuration: 100,
+        notes:
+          'F5:70 A4 D5:70 A4 F5:70 A4 D5:70 A4 F5:70 A4 D5:70 A4 F5:70 A#4 D5:70 A#4',
+        title: 'Strings',
+      },
+      {
+        channels: [14],
+        noteDuration: 100,
+        notes: 'x D4 x x D4 x D4 x x D4 x x D4 x D4 x',
+        title: 'Synth',
+      },
+    ],
+    velocity: 60,
+  },
+
+  // 09:37 in this video: https://www.youtube.com/watch?v=EcXupJGNw1s
+  foundPattern01: {
+    bpm: 80,
+    noteValue: 16,
+    stepSequencers: [
+      {
+        channels: [1, 2, 3, 4],
+        noteDuration: 100,
+        notes: 'F4 A#5 C6 F6 C7 F7 C8 F#6 F#4 C#5 G#5 C6 C#6 A#5 F6 C#5',
+        title: 'Pattern 1',
+      },
+    ],
+  },
 };
 
 export default tunez;

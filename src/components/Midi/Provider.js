@@ -2,13 +2,62 @@ import React from 'react';
 import MidiContext from './Context';
 import SettingsModal from './SettingsModal';
 import { MidiPortState } from 'lib/enums';
-import { debounce } from 'lodash';
+import { debounce, filter } from 'lodash';
 const preferredInputName = 'MODX-1';
 const preferredOutputName = 'MODX-1';
 
 const MidiContextProvider = ({ children }) => {
   const [settingsVisible, setSettingsVisibe] = React.useState(false);
-  const ref = React.useRef({ midi: null });
+
+  const ref = React.useRef({
+    midi: null,
+    selectedInput: null,
+    subscriptions: {},
+  });
+
+  // function to subscribe to midi input messages
+  const subscribe = React.useCallback((callback, opts) => {
+    const allInputs = Array.from(ref.current.midi.inputs.values());
+
+    const { ignoreEvents, inputName } = opts || {};
+
+    const inputs = !inputName
+      ? [ref.current.selectedInput]
+      : inputName === '*'
+      ? allInputs
+      : typeof inputName === 'string'
+      ? [allInputs.find(inp => inp.name === inputName)]
+      : [];
+
+    if (inputs.length === 0)
+      return console.warn('Invalid midi input', inputName);
+
+    console.log('subscribing', inputs, callback, 'from', allInputs);
+
+    const subscription = {
+      callback,
+      ignoreEvents: Array.isArray(ignoreEvents) ? ignoreEvents : null,
+    };
+
+    for (let input of inputs) {
+      if (!ref.current.subscriptions[input.name])
+        ref.current.subscriptions[input.name] = [];
+      ref.current.subscriptions[input.name].push(subscription);
+    }
+
+    // return unsubscriber function
+    return () => {
+      for (let input of inputs) {
+        for (let i = 0; i < ref.current.subscriptions[input.name].length; i++) {
+          if (ref.current.subscriptions[input.name][i] === subscription) {
+            console.log('found subscription') ||
+              ref.current.subscriptions[input.name].splice(i, 1);
+            break;
+          }
+        }
+      }
+    };
+  }, []);
 
   const defaultContextValue = React.useMemo(
     () => ({
@@ -17,12 +66,31 @@ const MidiContextProvider = ({ children }) => {
       ready: false,
       selectedInput: null,
       selectedOutput: null,
+      subscribe,
       sysex: false,
       toggleSettings: () => setSettingsVisibe(current => !current),
     }),
     []
   );
+
   const [contextValue, setContextValue] = React.useState(defaultContextValue);
+
+  // Update ref when selected input changed
+  React.useEffect(() => {
+    if (contextValue?.selectedInput) {
+      ref.current.selectedInput = contextValue.selectedInput;
+      /// TODO: Change subscriptions accordingly
+    }
+  }, [contextValue?.selectedInput]);
+
+  const getMidiMessageHandler = React.useCallback(() => {
+    return ({ data, srcElement: input }) =>
+      (ref.current.subscriptions[input.name] || [])
+        .filter(
+          ({ ignoreEvents }) => !ignoreEvents || !ignoreEvents.includes(data[0])
+        )
+        .forEach(({ callback }) => callback(data, input));
+  }, []);
 
   // add new connected inputs/outputs and discard disconnected from context
   const onConnectionStateChanged = React.useCallback(
@@ -89,12 +157,16 @@ const MidiContextProvider = ({ children }) => {
         .then(midi => {
           ref.current.midi = midi;
 
+          // wire-up midi/port events
           midi.onstatechange = handleConnectionStateChanged;
 
+          const inputs = Array.from(midi.inputs.values()).filter(
+            i => i.state === 'connected'
+          );
+          for (let input of inputs)
+            input.onmidimessage = getMidiMessageHandler(input);
+
           setContextValue(ctx => {
-            const inputs = Array.from(midi.inputs.values()).filter(
-              i => i.state === 'connected'
-            );
             const outputs = Array.from(midi.outputs.values()).filter(
               o => o.state === 'connected'
             );
@@ -105,6 +177,7 @@ const MidiContextProvider = ({ children }) => {
               outputs,
               ready: true,
               sysex: sysex === true,
+              toggleSettings: () => setSettingsVisibe(current => !current),
             };
 
             // try to preserve previous input, if available

@@ -1,5 +1,3 @@
-import { numOfChannels } from '../constants';
-
 const partsNum = 8;
 const basePartNum = 176;
 
@@ -40,6 +38,9 @@ const MidiMessages = {
   ModulationWheel: '176_1',
   MotionSeqHold: '176_88',
   MotionSeqTrigger: '176_89',
+  PausePlayback: 252,
+  ResumePlayback: 251,
+  StartPlayback: 250,
   Superknob: '176_95',
 };
 

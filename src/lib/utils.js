@@ -1,3 +1,5 @@
+const isFunc = arg => typeof arg === 'function';
+
 const greatestCommonDivisor = (a, b) => (!b ? a : gcd(b, a % b));
 
 const leastCommonMultipleInner = (a, b) => (a * b) / gcd(a, b);
@@ -10,4 +12,4 @@ const leastCommonMultiple = (...numbers) =>
       numbers[0]
     );
 
-export { greatestCommonDivisor, leastCommonMultiple };
+export { greatestCommonDivisor, isFunc, leastCommonMultiple };

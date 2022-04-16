@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import { globalParameterData } from '../constants';
 import StepSequencerSummary from './StepSequencerSummary';
+import { useKeyboardControl } from './keyboardControl';
 
 import { Note1, Note2, Note4, Note8, Note16, Note32 } from 'assets/notes';
 
@@ -27,17 +28,19 @@ export const globalParametersArr = Object.keys(globalParameterData).map(
   })
 );
 
-const MidiSequencerGlobalControl = ({
-  activeStepSequencerIdx,
-  onPlay,
-  onSeekToStart,
-  onSetActiveStepSequencerIdx,
-  onSetData,
-  onSetParameter,
-  onStop,
-  parameters,
-  stepSequencersData,
-}) => {
+const MidiSequencerGlobalControl = props => {
+  const {
+    activeStepSequencerIdx,
+    onPlay,
+    onSeekToStart,
+    onSetActiveStepSequencerIdx,
+    onSetData,
+    onSetParameter,
+    onStop,
+    parameters,
+    stepSequencersData,
+  } = props;
+
   const handleSetStepSequencerParameter = React.useCallback(
     (idx, name, value) =>
       onSetData(currentData =>
@@ -49,6 +52,8 @@ const MidiSequencerGlobalControl = ({
       ),
     [onSetData]
   );
+
+  useKeyboardControl(props);
 
   return (
     <div className="global-controls">

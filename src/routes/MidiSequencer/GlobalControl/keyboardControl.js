@@ -23,7 +23,6 @@ const useKeyboardControl = ({ onPlay, onSeekToStart, onStop }) => {
   }, [onPlay, onSeekToStart, onStop]);
 
   const handleMidiMessage = useCallback(([message]) => {
-    console.log('message', message);
     if (
       message === MidiMessages.StartPlayback &&
       isFunc(ref.current.onSeekToStart) &&

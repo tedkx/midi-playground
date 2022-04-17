@@ -1,9 +1,10 @@
 import { useCallback, useContext, useEffect, useRef } from 'react';
-import { MidiMessages } from 'lib/devices/modx';
+import {
+  MidiMessages,
+  defaultIgnoreMessages as ignoreMessages,
+} from 'lib/devices/modx';
 import MidiContext from 'components/Midi/Context';
 import { isFunc } from 'lib/utils';
-
-const ignoreEvents = [MidiMessages.ActiveSensing, MidiMessages.Clock];
 
 const useKeyboardControl = ({ onPlay, onSeekToStart, onStop }) => {
   const { ready, subscribe } = useContext(MidiContext);
@@ -44,7 +45,9 @@ const useKeyboardControl = ({ onPlay, onSeekToStart, onStop }) => {
   // subscribe when midi context ready
   useEffect(() => {
     if (ready)
-      ref.current.unsubscribe = subscribe(handleMidiMessage, { ignoreEvents });
+      ref.current.unsubscribe = subscribe(handleMidiMessage, {
+        ignoreMessages,
+      });
   }, [ready]);
 
   // cleanup effect

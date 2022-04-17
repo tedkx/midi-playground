@@ -2,7 +2,8 @@ import React from 'react';
 import MidiContext from './Context';
 import SettingsModal from './SettingsModal';
 import { MidiPortState } from 'lib/enums';
-import { debounce, filter } from 'lodash';
+import { debounce } from 'lodash';
+
 const preferredInputName = 'MODX-1';
 const preferredOutputName = 'MODX-1';
 
@@ -19,7 +20,7 @@ const MidiContextProvider = ({ children }) => {
   const subscribe = React.useCallback((callback, opts) => {
     const allInputs = Array.from(ref.current.midi.inputs.values());
 
-    const { ignoreEvents, inputName } = opts || {};
+    const { ignoreMessages, inputName } = opts || {};
 
     const inputs = !inputName
       ? [ref.current.selectedInput]
@@ -36,7 +37,7 @@ const MidiContextProvider = ({ children }) => {
 
     const subscription = {
       callback,
-      ignoreEvents: Array.isArray(ignoreEvents) ? ignoreEvents : null,
+      ignoreMessages: Array.isArray(ignoreMessages) ? ignoreMessages : null,
     };
 
     for (let input of inputs) {
@@ -87,7 +88,8 @@ const MidiContextProvider = ({ children }) => {
     return ({ data, srcElement: input }) =>
       (ref.current.subscriptions[input.name] || [])
         .filter(
-          ({ ignoreEvents }) => !ignoreEvents || !ignoreEvents.includes(data[0])
+          ({ ignoreMessages }) =>
+            !ignoreMessages || !ignoreMessages.includes(data[0])
         )
         .forEach(({ callback }) => callback(data, input));
   }, []);

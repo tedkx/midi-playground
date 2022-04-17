@@ -44,4 +44,6 @@ const MidiMessages = {
   Superknob: '176_95',
 };
 
-export { MidiMessages };
+const defaultIgnoreMessages = [MidiMessages.ActiveSensing, MidiMessages.Clock];
+
+export { defaultIgnoreMessages, MidiMessages };

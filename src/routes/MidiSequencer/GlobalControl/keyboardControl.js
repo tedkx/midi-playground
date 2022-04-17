@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useRef } from 'react';
 import {
   MidiMessages,
   defaultIgnoreMessages as ignoreMessages,
-} from 'lib/devices/modx';
+} from 'lib/enums';
 import MidiContext from 'components/Midi/Context';
 import { isFunc } from 'lib/utils';
 
@@ -23,6 +23,7 @@ const useKeyboardControl = ({ onPlay, onSeekToStart, onStop }) => {
   }, [onPlay, onSeekToStart, onStop]);
 
   const handleMidiMessage = useCallback(([message]) => {
+    console.log('message', message);
     if (
       message === MidiMessages.StartPlayback &&
       isFunc(ref.current.onSeekToStart) &&
@@ -48,14 +49,15 @@ const useKeyboardControl = ({ onPlay, onSeekToStart, onStop }) => {
       ref.current.unsubscribe = subscribe(handleMidiMessage, {
         ignoreMessages,
       });
+
+    return () =>
+      ready &&
+      typeof ref.current.unsubscribe === 'function' &&
+      ref.current.unsubscribe();
   }, [ready]);
 
   // cleanup effect
-  useEffect(() => {
-    return () =>
-      typeof ref.current.unsubscribe === 'function' &&
-      ref.current.unsubscribe();
-  }, []);
+  useEffect(() => {}, []);
 };
 
 export { useKeyboardControl };

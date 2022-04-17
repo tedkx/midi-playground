@@ -1,5 +1,8 @@
 import { noteOffStart, noteOnStart, numOfChannels } from './constants';
-import { MidiMessages as MODXMidiMessages } from './devices/modx';
+import {
+  MidiMessages as MODXMidiMessages,
+  defaultIgnoreMessages,
+} from './devices/modx';
 
 const MidiPortState = {
   Connected: 'connected',
@@ -30,4 +33,10 @@ const MidiMessageCodes = Object.keys(MidiMessages).reduce((obj, key) => {
   return obj;
 }, {});
 
-export { MidiMessageCodes, MidiMessages, MidiPortConnection, MidiPortState };
+export {
+  defaultIgnoreMessages,
+  MidiMessageCodes,
+  MidiMessages,
+  MidiPortConnection,
+  MidiPortState,
+};

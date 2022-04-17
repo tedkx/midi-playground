@@ -1,8 +1,13 @@
 import React from 'react';
 import { Card } from 'antd';
 import MidiContext from 'components/Midi/Context';
-import { MidiMessageCodes, MidiMessages, MidiPortState } from 'lib/enums';
+import {
+  defaultIgnoreMessages as ignoreMessages,
+  MidiMessageCodes,
+  MidiMessages,
+} from 'lib/enums';
 import { noteToString } from 'lib/midi';
+import { isFunc } from 'lib/utils';
 
 const style = {
   fontFamily: 'Consolas',
@@ -11,23 +16,18 @@ const style = {
   overflowY: 'scroll',
 };
 
-const MidiMessageViewer = props => {
-  const { selectedInput } = React.useContext(MidiContext);
+const MidiMessageViewer = () => {
+  const { ready, subscribe } = React.useContext(MidiContext);
   const [lines, setLines] = React.useState([]);
 
   const ref = React.useRef({
     start: null,
     numOfMessages: 0,
+    unsubscribe: null,
   });
 
   const appendLine = React.useCallback(
-    ({ data }) => {
-      if (
-        data[0] === MidiMessages.ActiveSensing ||
-        data[0] === MidiMessages.Clock
-      )
-        return;
-
+    data => {
       const arr = Array.from(data);
 
       let sliceLength = 3,
@@ -57,13 +57,12 @@ const MidiMessageViewer = props => {
   );
 
   React.useEffect(() => {
-    if (selectedInput && selectedInput.state === MidiPortState.Connected)
-      selectedInput.onmidimessage = appendLine;
+    if (ready)
+      ref.current.unsubscribe = subscribe(appendLine, { ignoreMessages });
 
-    return () => {
-      if (selectedInput) selectedInput.onmidimessage = null;
-    };
-  }, [selectedInput]);
+    return () =>
+      ready && isFunc(ref.current.unsubscribe) && ref.current.unsubscribe();
+  }, [ready]);
 
   return (
     <Card bordered={false} style={style}>

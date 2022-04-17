@@ -6,6 +6,7 @@ import { debounce } from 'lodash';
 
 const preferredInputName = 'MODX-1';
 const preferredOutputName = 'MODX-1';
+const globalInputName = 'global';
 
 const MidiContextProvider = ({ children }) => {
   const [settingsVisible, setSettingsVisibe] = React.useState(false);
@@ -13,50 +14,42 @@ const MidiContextProvider = ({ children }) => {
   const ref = React.useRef({
     midi: null,
     selectedInput: null,
-    subscriptions: {},
+    subscriptions: { [globalInputName]: [] },
   });
 
   // function to subscribe to midi input messages
   const subscribe = React.useCallback((callback, opts) => {
-    const allInputs = Array.from(ref.current.midi.inputs.values());
-
     const { ignoreMessages, inputName } = opts || {};
 
-    const inputs = !inputName
-      ? [ref.current.selectedInput]
+    const input = !inputName
+      ? ref.current.selectedInput
       : inputName === '*'
-      ? allInputs
+      ? { name: globalInputName }
       : typeof inputName === 'string'
-      ? [allInputs.find(inp => inp.name === inputName)]
-      : [];
+      ? Array.from(ref.current.midi.inputs.values()).find(
+          inp => inp.name === inputName
+        )
+      : null;
 
-    if (inputs.length === 0)
-      return console.warn('Invalid midi input', inputName);
-
-    console.log('subscribing', inputs, callback, 'from', allInputs);
+    if (!input) return console.warn('Invalid midi input', inputName);
 
     const subscription = {
       callback,
       ignoreMessages: Array.isArray(ignoreMessages) ? ignoreMessages : null,
     };
 
-    for (let input of inputs) {
-      if (!ref.current.subscriptions[input.name])
-        ref.current.subscriptions[input.name] = [];
-      ref.current.subscriptions[input.name].push(subscription);
-    }
+    if (!ref.current.subscriptions[input.name])
+      ref.current.subscriptions[input.name] = [];
+    ref.current.subscriptions[input.name].push(subscription);
 
     // return unsubscriber function
     return () => {
-      for (let input of inputs) {
-        for (let i = 0; i < ref.current.subscriptions[input.name].length; i++) {
-          if (ref.current.subscriptions[input.name][i] === subscription) {
+      for (let i = 0; i < ref.current.subscriptions[input.name].length; i++)
+        if (ref.current.subscriptions[input.name][i] === subscription)
+          return (
             console.log('found subscription') ||
-              ref.current.subscriptions[input.name].splice(i, 1);
-            break;
-          }
-        }
-      }
+            ref.current.subscriptions[input.name].splice(i, 1)
+          );
     };
   }, []);
 
@@ -86,7 +79,10 @@ const MidiContextProvider = ({ children }) => {
 
   const getMidiMessageHandler = React.useCallback(() => {
     return ({ data, srcElement: input }) =>
-      (ref.current.subscriptions[input.name] || [])
+      [
+        ...(ref.current.subscriptions[input.name] || []),
+        ...ref.current.subscriptions[globalInputName],
+      ]
         .filter(
           ({ ignoreMessages }) =>
             !ignoreMessages || !ignoreMessages.includes(data[0])

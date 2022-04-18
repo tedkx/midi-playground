@@ -13,6 +13,8 @@ const MidiContextProvider = ({ children }) => {
 
   const ref = React.useRef({
     midi: null,
+    pendingConnectionChanges: [],
+    pendingConnectionTimeout: null,
     selectedInput: null,
     subscriptions: { [globalInputName]: [] },
   });
@@ -93,24 +95,20 @@ const MidiContextProvider = ({ children }) => {
   // add new connected inputs/outputs and discard disconnected from context
   const onConnectionStateChanged = React.useCallback(
     e => {
-      if (e.port.state === MidiPortState.Connected) {
-        const inputs = Array.from(ref.current.midi.inputs.values()).filter(
-          input => input.state === MidiPortState.Connected
-        );
-        const outputs = Array.from(ref.current.midi.outputs.values()).filter(
-          input => input.state === MidiPortState.Connected
-        );
+      console.log('pending changes', ref.current.pendingConnectionChanges);
 
+      const inputs = Array.from(ref.current.midi.inputs.values()).filter(
+        input => input.state === MidiPortState.Connected
+      );
+      const outputs = Array.from(ref.current.midi.outputs.values()).filter(
+        input => input.state === MidiPortState.Connected
+      );
+
+      if (e.port.state === MidiPortState.Connected) {
         setContextValue(currentCtx => ({ ...currentCtx, inputs, outputs }));
       } else {
-        // go to next input/output, if disconnected port was selected
         setContextValue(currentCtx => {
-          const inputs = Array.from(ref.current.midi.inputs.values()).filter(
-            input => input.state === MidiPortState.Connected
-          );
-          const outputs = Array.from(ref.current.midi.outputs.values()).filter(
-            input => input.state === MidiPortState.Connected
-          );
+          // go to next input/output, if disconnected port was selected
           const newSelectedInput =
             (!inputs.some(
               input => input.name === currentCtx.selectedInput?.name
@@ -123,6 +121,37 @@ const MidiContextProvider = ({ children }) => {
             ) &&
               outputs[0]) ||
             null;
+
+          if (
+            newSelectedInput &&
+            !ref.current.subscriptions[newSelectedInput.name]
+          )
+            ref.current.subscriptions[newSelectedInput.name] = [];
+
+          // update input-less subscriptions
+          const orphanedSubscriptions = ref.current.pendingConnectionChanges
+            .filter(
+              port =>
+                port.type === 'input' &&
+                port.connection === 'closed' &&
+                port.state === 'disconnected'
+            )
+            .reduce(
+              (arr, port) =>
+                ref.current.subscriptions[port.name]
+                  ? [...arr, ...ref.current.subscriptions[port.name]]
+                  : arr,
+              []
+            );
+          console.log(
+            'orphaned subscriptions',
+            ref.current.pendingConnectionChanges.filter(
+              port =>
+                port.connection === 'closed' && port.state === 'disconnected'
+            ),
+            '->',
+            orphanedSubscriptions
+          );
 
           return newSelectedInput !== false ||
             newSelectedOutput !== false ||
@@ -138,12 +167,24 @@ const MidiContextProvider = ({ children }) => {
             : currentCtx;
         });
       }
+
+      ref.current.pendingConnectionChanges = [];
     },
     [setContextValue]
   );
 
-  const handleConnectionStateChanged = React.useMemo(
-    () => debounce(onConnectionStateChanged, 100),
+  const handleConnectionStateChanged = React.useCallback(
+    e => {
+      if (e.port.connection === 'pending') return;
+
+      ref.current.pendingConnectionChanges.push(e.port);
+
+      clearTimeout(ref.current.pendingConnectionTimeout);
+      ref.current.pendingConnectionTimeout = setTimeout(
+        () => onConnectionStateChanged(e),
+        100
+      );
+    },
     [onConnectionStateChanged]
   );
 

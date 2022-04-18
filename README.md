@@ -19,7 +19,7 @@
 - [ ] Pattern randomization
 - [ ] Pre-made pattern selection
 - [ ] Import/export to midi
-- [ ] Central midi message handling instead of each componen using input/output
+- [x] Central midi message handling instead of each componen using input/output
 - [ ] Maybe use AudioContext metronome instead of/in conjuction with setInterval
 
 ### Altered Scale Practice

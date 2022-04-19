@@ -71,23 +71,28 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
             <span>{data?.title}</span>
           </div>
           <div className="flex-spacer"></div>
-          <SequenceLengthModifier
-            notes={data?.notes}
-            onChange={handleSequenceLengthChanged}
-          />
-          <MidiChannelsSelector
-            channels={data?.channels}
-            numOfChannels={numOfChannels}
-            onSetChannels={handleChannelsChange}
-            title="Channels"
-          />
-          {parametersArr.map(p => (
-            <ParameterKnob
-              {...p}
-              key={p.name}
-              onSetParameter={onSetParameter}
-              value={parameters[p.name]}
+          <div className="parameter">
+            <SequenceLengthModifier
+              notes={data?.notes}
+              onChange={handleSequenceLengthChanged}
             />
+          </div>
+          <div className="parameter">
+            <MidiChannelsSelector
+              channels={data?.channels}
+              numOfChannels={numOfChannels}
+              onSetChannels={handleChannelsChange}
+              title="Channels"
+            />
+          </div>
+          {parametersArr.map(p => (
+            <div className="parameter" key={p.name}>
+              <ParameterKnob
+                {...p}
+                onSetParameter={onSetParameter}
+                value={parameters[p.name]}
+              />
+            </div>
           ))}
         </Card>
       </div>

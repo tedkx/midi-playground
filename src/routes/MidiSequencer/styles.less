@@ -101,10 +101,23 @@
       justify-content: flex-start;
       width: 760px;
       margin: 0 auto;
-    }
 
-    .pads-container .keyboard-pad {
-      margin: 0 15px 15px 0;
+      .keyboard-pad {
+        margin: 0 15px 15px 0;
+
+        .pad-deletion {
+          color: #000;
+          cursor: pointer;
+          font-size: 16px;
+          font-weight: bold;
+          position: absolute;
+          top: -2px;
+          right: 7px;
+          opacity: 1;
+          transition: opacity .25s;
+        }
+        .pad-deletion:hover { opacity: 0.7; }
+      }      
     }
 
     .controls .ant-card {

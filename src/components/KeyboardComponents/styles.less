@@ -46,6 +46,37 @@
     background: #999b9f;
   }
 
+  &.white.active {
+    background: #F4F4F4;
+    box-shadow: @latching-active-box-shadow rgba(52, 52, 52, 0.5),
+      @latching-active-box-shadow-inset;
+
+    &.small {
+      box-shadow: @latching-active-box-shadow-small rgba(52, 52, 52, 0.5),
+        @latching-active-box-shadow-inset;
+    }
+  }
+
+  &.red.active {
+    background: #ff5370;
+    box-shadow: @latching-active-box-shadow rgba(255, 83, 112, 0.6),
+      @latching-active-box-shadow-inset;
+    &.small {
+      box-shadow: @latching-active-box-shadow-small rgba(255, 83, 112, 0.6),
+        @latching-active-box-shadow-inset;
+    }
+  }
+
+  &.orange.active {
+    background: #f58025;
+    box-shadow: @latching-active-box-shadow rgba(245, 128, 37, 0.7),
+      @latching-active-box-shadow-inset;
+    &.small {
+      box-shadow: @latching-active-box-shadow-small rgba(245, 128, 37, 0.7),
+        @latching-active-box-shadow-inset;
+    }
+  }
+
   &.blue.active {
     background: #2bb3ff;
     box-shadow: @latching-active-box-shadow rgba(33, 169, 255, 0.5),

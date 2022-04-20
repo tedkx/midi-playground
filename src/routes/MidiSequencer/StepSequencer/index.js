@@ -1,8 +1,12 @@
 import React from 'react';
 import { Card } from 'antd';
-import { Button, Pad, ParameterKnob } from 'components/KeyboardComponents';
+import {
+  LatchingButton,
+  Pad,
+  ParameterKnob,
+} from 'components/KeyboardComponents';
 import MidiChannelsSelector from './MidiChannelsSelector';
-import { sequencerParameterData } from '../constants';
+import { sequencerModes, sequencerParameterData } from '../constants';
 import { usePadEvents, useParameters } from '../utils';
 import { noteToString } from 'lib/midi';
 import { numOfChannels } from 'lib/constants';
@@ -14,6 +18,7 @@ const parametersArr = Object.keys(sequencerParameterData).map(key => ({
 }));
 
 const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
+  const [mode, setMode] = React.useState(sequencerModes.play);
   const { noteDuration, transpose } = data;
 
   const sequencerActiveNoteIdx = React.useMemo(
@@ -72,11 +77,14 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
               <span>{data?.title}</span>
             </div>
             <div className="rec-button-wrap">
-              <Button onClick={() => {}}>
+              <LatchingButton
+                activeColor="white"
+                onActiveChanged={value => console.log(value)}
+              >
                 <div className="flex-center">
                   Rec <div className="rec-icon"></div>
                 </div>
-              </Button>{' '}
+              </LatchingButton>{' '}
             </div>
           </div>
           <div className="flex-spacer"></div>

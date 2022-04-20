@@ -6,6 +6,11 @@ const defaultNote = noteToMidi('C5');
 const defaultPatternLength = 16;
 const maxSequencerNotes = 120;
 
+const sequencerModes = {
+  play: 'play',
+  record: 'record',
+};
+
 const createParameter = (min, max, defaultValue, title, centerBased) => ({
   centerBased: centerBased === true,
   defaultValue,
@@ -72,6 +77,7 @@ export {
   defaultVelocity,
   globalParameterData,
   maxSequencerNotes,
+  sequencerModes,
   sequencerParameterData,
   stepSequencerColors,
 };

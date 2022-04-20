@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, InputNumber } from 'antd';
-import { Pad, ParameterKnob } from 'components/KeyboardComponents';
+import { Card } from 'antd';
+import { Button, Pad, ParameterKnob } from 'components/KeyboardComponents';
 import MidiChannelsSelector from './MidiChannelsSelector';
 import { sequencerParameterData } from '../constants';
 import { usePadEvents, useParameters } from '../utils';
@@ -63,12 +63,21 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
     <div className="step-sequencer">
       <div className="controls">
         <Card bordered={false}>
-          <div className="step-sequencer-title">
-            <div
-              className="step-sequencer-color"
-              style={{ backgroundColor: data?.color }}
-            ></div>
-            <span>{data?.title}</span>
+          <div className="step-sequencer-title-wrap">
+            <div className="step-sequencer-title">
+              <div
+                className="step-sequencer-color"
+                style={{ backgroundColor: data?.color }}
+              ></div>
+              <span>{data?.title}</span>
+            </div>
+            <div className="rec-button-wrap">
+              <Button onClick={() => {}}>
+                <div className="flex-center">
+                  Rec <div className="rec-icon"></div>
+                </div>
+              </Button>{' '}
+            </div>
           </div>
           <div className="flex-spacer"></div>
           <div className="parameter">

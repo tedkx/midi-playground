@@ -68,6 +68,33 @@
       margin-left: 5px;
     }
 
+    .rec-icon {
+      height: 20px;
+      width: 20px;
+      position: relative;
+    }
+
+    .rec-icon::before {
+      border: solid 1px red;
+      content: ' ';
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .rec-icon::after {
+      background: red;
+      content: ' ';
+      height: 14px;
+      width: 14px;
+      border-radius: 50%;
+      position: absolute;
+      left: 3px;
+      top: 3px;
+    }
+
     .pads-container {
       display: flex;
       flex-wrap: wrap;
@@ -180,6 +207,10 @@
   }
 }
 
+.step-sequencer-title-wrap {
+  margin-left: 5px;
+}
+
 .step-sequencer-title {
   align-items: center;
   display: flex;
@@ -194,5 +225,13 @@
     height: 14px;
     margin-right: 4px;
     width: 14px;
+  }
+}
+
+.rec-button-wrap {
+  margin-top: 15px;
+
+  .flex-center {
+    width: 48px;
   }
 }

@@ -1,11 +1,16 @@
 import React from 'react';
 import MidiContext from 'components/Midi/Context';
-import { MidiMessages } from 'lib/enums';
+import {
+  MidiMessages,
+  defaultIgnoreMessages as ignoreMessages,
+} from 'lib/enums';
 import { leastCommonMultiple } from 'lib/utils';
+import { isNoteOn } from 'lib/midi';
 import {
   defaultNote,
   defaultPatternLength,
   defaultVelocity,
+  sequencerModes,
   stepSequencerColors,
 } from './constants';
 
@@ -23,13 +28,15 @@ const createNote = (
 
 const usePadEvents = setPadData => {
   const onClick = React.useCallback(
-    padIndex =>
+    (padIndex, _, e) => {
+      console.log('clicked');
       setPadData(({ notes, ...pd }) => ({
         ...pd,
         notes: notes.map((item, idx) =>
           idx === padIndex ? { ...item, on: !item.on } : item
         ),
-      })),
+      }));
+    },
     [setPadData]
   );
 
@@ -49,8 +56,20 @@ const usePadEvents = setPadData => {
     [setPadData]
   );
 
+  const onDelete = React.useCallback((e, index) => {
+    console.log('deleting', index);
+    e.preventDefault();
+    e.stopPropagation();
+    setPadData(({ notes, ...pd }) => ({
+      ...pd,
+      notes: notes.filter((_, idx) => idx !== index),
+    }));
+    return false;
+  }, []);
+
   return {
     onClick,
+    onDelete,
     onWheel,
   };
 };
@@ -253,10 +272,55 @@ const createDefaultStepSequencersData = tuneSequencers => {
   return sequencers.map(createDefaultStepSequencerData);
 };
 
+const useStepRecording = setPadData => {
+  const ref = React.useRef({ noteTimeouts: {} });
+  const { subscribe } = React.useContext(MidiContext);
+  const [mode, setMode] = React.useState(sequencerModes.play);
+
+  const onToggleRecording = React.useCallback(isRecording =>
+    setMode(isRecording ? sequencerModes.record : sequencerModes.play)
+  );
+
+  // handle note addition through keyboard
+  const onAddNote = React.useCallback(
+    midiMessage => {
+      if (!isNoteOn(midiMessage)) return;
+
+      const note = midiMessage[1];
+      clearTimeout(ref.current.noteTimeouts[note]);
+      ref.current.noteTimeouts[note] = setTimeout(() => {
+        setPadData(({ notes, ...pd }) => ({
+          ...pd,
+          notes: notes.concat({ note, on: true, velocity: 60 }),
+        }));
+      }, 50);
+    },
+    [setPadData]
+  );
+
+  const isRecording = mode === sequencerModes.record;
+
+  // when recording mode on, subscribe to midi note events
+  React.useEffect(() => {
+    let unsubscribe = null;
+    if (isRecording) unsubscribe = subscribe(onAddNote, { ignoreMessages });
+
+    return () => unsubscribe && unsubscribe();
+  }, [isRecording]);
+
+  return {
+    isRecording: mode === sequencerModes.record,
+    mode,
+    onToggleRecording,
+    setMode,
+  };
+};
+
 export {
   createDefaultStepSequencersData,
   createNote,
   useNotesPlaying,
   useParameters,
   usePadEvents,
+  useStepRecording,
 };

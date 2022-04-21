@@ -6,8 +6,8 @@ import {
   ParameterKnob,
 } from 'components/KeyboardComponents';
 import MidiChannelsSelector from './MidiChannelsSelector';
-import { sequencerModes, sequencerParameterData } from '../constants';
-import { usePadEvents, useParameters } from '../utils';
+import { sequencerParameterData } from '../constants';
+import { usePadEvents, useParameters, useStepRecording } from '../utils';
 import { noteToString } from 'lib/midi';
 import { numOfChannels } from 'lib/constants';
 import SequenceLengthModifier from './SequenceLengthModifier';
@@ -18,7 +18,6 @@ const parametersArr = Object.keys(sequencerParameterData).map(key => ({
 }));
 
 const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
-  const [mode, setMode] = React.useState(sequencerModes.play);
   const { noteDuration, transpose } = data;
 
   const sequencerActiveNoteIdx = React.useMemo(
@@ -62,7 +61,9 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
     [onSetData]
   );
 
-  const padEvents = usePadEvents(onSetData);
+  const { onDelete, ...padEvents } = usePadEvents(onSetData);
+
+  const { isRecording, onToggleRecording } = useStepRecording(onSetData);
 
   return (
     <div className="step-sequencer">
@@ -79,7 +80,7 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
             <div className="rec-button-wrap">
               <LatchingButton
                 activeColor="white"
-                onActiveChanged={value => console.log(value)}
+                onActiveChanged={onToggleRecording}
               >
                 <div className="flex-center">
                   Rec <div className="rec-icon"></div>
@@ -118,10 +119,20 @@ const StepSequencer = ({ activeNoteIdx, data, onSetData }) => {
           data.notes.map(({ note, on }, idx) => (
             <>
               <Pad
-                active={sequencerActiveNoteIdx === idx}
+                active={!isRecording && sequencerActiveNoteIdx === idx}
                 index={idx}
                 key={note}
-                on={on}
+                on={!isRecording && on}
+                overlayChildren={
+                  isRecording && (
+                    <div
+                      className="pad-deletion"
+                      onClick={e => onDelete(e, idx)}
+                    >
+                      x
+                    </div>
+                  )
+                }
                 {...padEvents}
               >
                 {noteToString(note)}

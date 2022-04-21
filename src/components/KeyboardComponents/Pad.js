@@ -8,6 +8,7 @@ const Pad = ({
   on,
   onClick,
   onWheel,
+  overlayChildren,
   ...props
 }) => {
   const handleClick = React.useCallback(
@@ -33,7 +34,7 @@ const Pad = ({
       onWheel={handleWheel}
       {...props}
     >
-      <div className="pad-overlay"></div>
+      <div className="pad-overlay">{overlayChildren}</div>
       <div className="pad-inner">{children}</div>
     </div>
   );

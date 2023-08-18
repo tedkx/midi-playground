@@ -118,6 +118,21 @@ const tunez = {
       },
     ],
   },
+
+  // ludwig goransson's FOILS from Tenet
+  foilz: {
+    bpm: 75,
+    noteValue: 16,
+    stepSequencers: [
+      {
+        channels: [1],
+        noteDuration: 100,
+        notes:
+          'D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4 F3 A#3 F4 F3 A#3 F4 F3 A#3 F4 F3 A#3 F4 F3 A#3 F4 F3 A#3 F4 F3 A#3 F4 F3 A#3 F4 F#3 A#3 F#4 F#3 A#3 F#4 F#3 A#3 F#4 F#3 A#3 F#4 G#3 B3 G#4 G#3 B3 G#4 G#3 B3 G#4 G#3 B3 G#4 D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4 D#3 D#4 F#4',
+        title: 'Pattern 1',
+      },
+    ],
+  },
 };
 
 export default tunez;
